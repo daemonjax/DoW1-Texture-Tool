@@ -1,6 +1,8 @@
 # DoW1-Texture-Tool
 This is a mod tool for Dawn of War 1 games.
 
+Download link: https://github.com/daemonjax/DoW1-Texture-Tool/releases
+
 If you want to replace a decal with a higher resolution version in a map or model, you'll run into a problem -- the decal just gets bigger ingame and not higher resolution.
 
 This tool fixes that by allowing you to modify the physical decal size shown ingame -- so your higher res textures are actually higher res and don't simply take up more space.
