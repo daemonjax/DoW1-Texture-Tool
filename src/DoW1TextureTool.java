@@ -141,7 +141,7 @@ final class DoW1TextureTool
             if (result.exists() && result.isFile() && result.canRead() && result.length() > 0) return result;
             Error.PROCESS_FILE.exit();
         }
-
+        if (args.length == 0) Error.NOT_AN_ERROR.cleanExit();
         Error.ARGSINVALID.exit(); /*UNREACHABLE*/ return null;
     }
 
