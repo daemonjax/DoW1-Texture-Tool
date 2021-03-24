@@ -1,10 +1,34 @@
+/*  DoW1 Texture Tool
+    Copyright (C) 2021  Daemonjax
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/gpl-3.0.html>.
+*/
+
 /**
  *
  * @author daemonjax
  */
 final class Strings
 {
-    static final String USAGE = "\n\nUsage:\nDoW1TextureTool \"<FILEPATH>\" <TARGET> <COMMAND>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
+    static final String VERSION = "1.0";
+    static final String LICENSE_INFO = """
+                                       DoW1 Texture Tool  Copyright (C) 2021  Daemonjax
+                                       This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
+                                       are welcome to redistribute it under certain conditions.  See included LICENSE
+                                       file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html
+                                       """;
+    static final String USAGE = LICENSE_INFO + "\n\nUsage:\nDoW1TextureTool \"<FILEPATH>\" <TARGET> <COMMAND>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
     static final String COMMAND = "Command: ";
     static final String TARGET  = "Target: ";
     static final String FILE = "File: ";
