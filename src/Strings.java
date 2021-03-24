@@ -38,7 +38,7 @@ final class Strings
     static final String LIST_SEPERATOR = " | ";
     static final String MAP_SGB_FILE = "Map SGB file detected.";
     static final String TARGET_INFO = "Info: Here's a complete list of valid decal targets found in this map file:";
-    static final String MODEL_WHE_FILE = "Model WHE file detected.";
+    static final String MODEL_WHE_FILE = "Model WHE file detected.  Unfortunaetly this feature is not yet implemented.";
     static final String EMPTY = "";
     static final String TARGET_EXAMPLE_DECAL = "=\"<decal file path>\"";
     static final String COMMAND_EXAMPLE_MULTIPLY = "=<float value>";
