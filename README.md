@@ -2,6 +2,7 @@
 This is a mod tool for Dawn of War 1 games.
 
 Download link: https://github.com/daemonjax/DoW1-Texture-Tool/releases
+Discussion thread: https://www.nexusmods.com/warhammer40000dawnofwar/mods/326?tab=posts
 
 If you want to replace a decal with a higher resolution version in a map or model, you'll run into a problem -- the decal just gets bigger ingame and not higher resolution.
 
@@ -27,5 +28,3 @@ To run:
 java -jar DoW1TextureTool.jar
 
 The above will print a "usage" screen which includes examples.
-
-Discussion thread: https://www.nexusmods.com/warhammer40000dawnofwar/mods/326?tab=posts
