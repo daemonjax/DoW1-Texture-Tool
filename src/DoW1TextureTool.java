@@ -80,6 +80,7 @@ final class DoW1TextureTool
 
                     if (command == Command.MULTIPLY) message = Strings.MULTIPLY_MESSAGE_1 + multiplier;
                     else message = Strings.INFO_MESSAGE_1;
+                    
                     System.out.println(message);
 
                     int counter = 0;
@@ -99,12 +100,12 @@ final class DoW1TextureTool
                             if (command == Command.MULTIPLY)
                             {
                                 decalSize *= multiplier;
-                                if (decalSize < MIN_DECAL_SIZE)
-                                {
-                                    decalSize = MIN_DECAL_SIZE;
+                                if (decalSize >= MIN_DECAL_SIZE) DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
+                                else
+                                {                                    
                                     ++decalMinSizeCounter;    
-                                }                               
-                                DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
+                                    DataEnty.setDecalSize(fileBytes, decalSizeOffset, MIN_DECAL_SIZE);
+                                }                                                               
                             }
                             else System.out.println(decalSize);
                         }
@@ -116,12 +117,14 @@ final class DoW1TextureTool
                         if (decalMinSizeCounter > 0) message += Strings.NEWLINE + Strings.MULTIPLY_MESSAGE_3 + decalMinSizeCounter;
                     }
                     else message = Strings.INFO_MESSAGE_2;
+                    
                     System.out.println(message);
                 }
             }
             case MODEL_WHE ->
             {
                 System.out.println(Strings.MODEL_WHE_FILE);
+                Error.NOT_IMPLEMENTED.exit();
             }
         }
 

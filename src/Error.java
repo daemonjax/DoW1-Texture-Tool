@@ -33,6 +33,7 @@ enum Error
     UNIQUE_ID_NOT_FOUND("!!!Fatal error while looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map!!!"),
     COMMAND_MULTIPLY("!!!Fatal error while parsing the number for the multiplier.  It doesn't seem to be a proper number!!!"),
     SAVEFILE("!!!Fatal error while saving file!!!"),
+    NOT_IMPLEMENTED("!!!Attempting to use an unimplemented feature!!!"),
     NOT_AN_ERROR(Strings.EMPTY);
 
     private final String message;
