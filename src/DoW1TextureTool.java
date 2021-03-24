@@ -78,7 +78,7 @@ final class DoW1TextureTool
                     offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
 
                     int counter = 0;
-                    float originalSize;
+                    float temp;
 
                     if (command == Command.MULTIPLY) message = Strings.MULTIPLY_MESSAGE_1 + multiplier;
                     else message = Strings.INFO_MESSAGE_1;
@@ -91,10 +91,10 @@ final class DoW1TextureTool
                         {
                             ++counter;
                             decalSizeOffset = offset + (DataEnty.Node.DECAL_SIZE.relativeOffset - DataEnty.Node.UNIQUE_ID.relativeOffset);
-                            originalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
+                            temp = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
 
-                            if (command == Command.MULTIPLY) DataEnty.setDecalSize(fileBytes, decalSizeOffset, originalSize * multiplier);
-                            else System.out.println(originalSize);
+                            if (command == Command.MULTIPLY) DataEnty.setDecalSize(fileBytes, decalSizeOffset, temp * multiplier);
+                            else System.out.println(temp);
                         }
                     }
 
