@@ -47,6 +47,7 @@ final class Strings
     static final String MULTIPLY_MESSAGE_1 = "Multiplying the size of all instances of this decal by: ";
     static final String INFO_MESSAGE_1 = "List of current sizes for each instance of this decal: ";
     static final String MULTIPLY_MESSAGE_2 = "Total number of these decals modified on this map: ";
+    static final String MULTIPLY_MESSAGE_3 = "The number of decals that were prevented from going below the minimum size: ";
     static final String INFO_MESSAGE_2 = "Total number of these decals found in this map: ";
     static final String ALL_DONE = "All done!  ";    
     static final String SAVE_FORMAT = "-%02d";
