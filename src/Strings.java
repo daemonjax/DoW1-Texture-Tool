@@ -21,7 +21,7 @@
  */
 final class Strings
 {
-    static final String VERSION = "DoW1 Texture Tool v1.0";
+    static final String VERSION = "DoW1 Texture Tool v1.0.1";
     static final String LICENSE_INFO = "\n" + VERSION + 
                                        """                                                        
                                          Copyright (C) 2021  Daemonjax
