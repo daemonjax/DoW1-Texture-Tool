@@ -7,7 +7,7 @@ Discussion thread: https://www.nexusmods.com/warhammer40000dawnofwar/mods/326?ta
 
 If you want to replace a decal with a higher resolution version in a map or model, you'll run into a problem -- the decal just gets bigger ingame and not higher resolution.
 
-This tool fixes that by allowing you to modify the physical decal size shown ingame -- so your higher res textures are actually higher res and don't simply take up more space.
+This tool fixes that by allowing you to very quickly modify the physical decal size shown ingame -- so your higher res textures are actually higher res and don't simply take up more space.
 
 Definitely works with Dark Crusade files.  Should work with Soul Storm files (but I haven't tested it).  Might work with Do1 original and Winter Assault (not sure).  It'll either work perfectly or "fail-fast" during execution if the internal sctructure of the files changed between the DoW 1 versions, so you'll know quickly one way or another.
 
