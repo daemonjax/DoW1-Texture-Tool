@@ -26,6 +26,7 @@ final class DoW1TextureTool
     static final int ARG_FILENAME = 0;
     static final int ARG_TARGET = 1;
     static final int ARG_COMMAND = 2;
+    static final float MIN_DECAL_SIZE = 0.0105334455f;
 
     private DoW1TextureTool(){}
 
@@ -78,7 +79,9 @@ final class DoW1TextureTool
                     offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
 
                     int counter = 0;
+                    int decalMinSizeCounter = 0;
                     float originalDecalSize;
+                    float newDecalSize;
 
                     if (command == Command.MULTIPLY) message = Strings.MULTIPLY_MESSAGE_1 + multiplier;
                     else message = Strings.INFO_MESSAGE_1;
@@ -92,15 +95,26 @@ final class DoW1TextureTool
                             ++counter;
                             decalSizeOffset = offset + (DataEnty.Node.DECAL_SIZE.relativeOffset - DataEnty.Node.UNIQUE_ID.relativeOffset);
                             originalDecalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
-
-                            if (command == Command.MULTIPLY) DataEnty.setDecalSize(fileBytes, decalSizeOffset, originalDecalSize * multiplier);
+                            newDecalSize = originalDecalSize * multiplier;
+                            
+                            if (newDecalSize < MIN_DECAL_SIZE)
+                            {
+                                newDecalSize = MIN_DECAL_SIZE;
+                                ++decalMinSizeCounter;                                
+                            }
+                            
+                            if (command == Command.MULTIPLY) DataEnty.setDecalSize(fileBytes, decalSizeOffset, newDecalSize);
                             else System.out.println(originalDecalSize);
                         }
                     }
 
-                    if (command == Command.MULTIPLY) message = Strings.MULTIPLY_MESSAGE_2;
+                    if (command == Command.MULTIPLY) 
+                    {
+                        message = Strings.MULTIPLY_MESSAGE_2 + counter;
+                        if (decalMinSizeCounter > 0) message += Strings.NEWLINE + Strings.MULTIPLY_MESSAGE_3 + decalMinSizeCounter;
+                    }
                     else message = Strings.INFO_MESSAGE_2;
-                    System.out.println(message + counter);
+                    System.out.println(message);
                 }
             }
             case MODEL_WHE ->
