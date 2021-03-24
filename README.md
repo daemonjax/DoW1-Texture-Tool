@@ -24,5 +24,4 @@ java -jar DoW1TextureTool.jar
 
 The above will print a "usage" screen which includes examples.
 
-Github page: https://github.com/daemonjax/DoW1-Texture-Tool
 Discussion thread: https://www.nexusmods.com/warhammer40000dawnofwar/mods/326?tab=posts
