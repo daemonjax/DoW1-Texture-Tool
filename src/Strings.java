@@ -48,7 +48,7 @@ final class Strings
     static final String INFO_MESSAGE_1 = "List of current sizes for each instance of this decal: ";
     static final String MULTIPLY_MESSAGE_2 = "Total number of these decals modified on this map: ";
     static final String INFO_MESSAGE_2 = "Total number of these decals found in this map: ";
-    static final String ALL_DONE = "All done!";    
+    static final String ALL_DONE = "All done!  ";    
     static final String SAVE_FORMAT = "-%02d";
     static final String SAVING_FILE = "Saving modified file to: ";
     static final String INFO_DONE = "No files have been modified.";
