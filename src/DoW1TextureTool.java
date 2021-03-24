@@ -78,15 +78,15 @@ final class DoW1TextureTool
                     numNodes = DataEnty.getNumNodes(fileBytes, offset);                    
                     offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
 
-                    int counter = 0;
-                    int decalMinSizeCounter = 0;
-                    float originalDecalSize;
-                    float newDecalSize;
-
                     if (command == Command.MULTIPLY) message = Strings.MULTIPLY_MESSAGE_1 + multiplier;
                     else message = Strings.INFO_MESSAGE_1;
                     System.out.println(message);
 
+                    int counter = 0;
+                    int decalMinSizeCounter = 0;
+                    float decalSize;
+                                    
+                    
                     for (int i = 0, decalSizeOffset; i < numNodes; ++i, offset += DataEnty.Node.TOTAL_SIZE)
                     {
                         if (uniqueID[0] == fileBytes[offset    ] && uniqueID[1] == fileBytes[offset + 1] &&
@@ -94,17 +94,19 @@ final class DoW1TextureTool
                         {
                             ++counter;
                             decalSizeOffset = offset + (DataEnty.Node.DECAL_SIZE.relativeOffset - DataEnty.Node.UNIQUE_ID.relativeOffset);
-                            originalDecalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
-                            newDecalSize = originalDecalSize * multiplier;
-                            
-                            if (newDecalSize < MIN_DECAL_SIZE)
+                            decalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
+                                                        
+                            if (command == Command.MULTIPLY)
                             {
-                                newDecalSize = MIN_DECAL_SIZE;
-                                ++decalMinSizeCounter;                                
+                                decalSize *= multiplier;
+                                if (decalSize < MIN_DECAL_SIZE)
+                                {
+                                    decalSize = MIN_DECAL_SIZE;
+                                    ++decalMinSizeCounter;    
+                                }                               
+                                DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
                             }
-                            
-                            if (command == Command.MULTIPLY) DataEnty.setDecalSize(fileBytes, decalSizeOffset, newDecalSize);
-                            else System.out.println(originalDecalSize);
+                            else System.out.println(decalSize);
                         }
                     }
 
