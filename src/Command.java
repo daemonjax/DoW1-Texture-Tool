@@ -56,9 +56,9 @@ enum Command
     {
         switch (this)
         {
-            case MULTIPLY -> { return Strings.COMMAND_EXAMPLE_MULTIPLY; }
-            case SET      -> { return Strings.COMMAND_EXAMPLE_SET; }
-            default ->    { return Strings.EMPTY; }
+            case MULTIPLY: return Strings.COMMAND_EXAMPLE_MULTIPLY; 
+            case SET     : return Strings.COMMAND_EXAMPLE_SET;
+            default      : return Strings.EMPTY; 
         }
     }
 }

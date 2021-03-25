@@ -45,8 +45,8 @@ enum Target
     {
         switch (this)
         {
-            case DECAL -> { return Strings.TARGET_EXAMPLE_DECAL; }
-            default ->    { return Strings.EMPTY; }
+            case DECAL: return Strings.TARGET_EXAMPLE_DECAL; 
+            default   : return Strings.EMPTY;
         }
     }
 }

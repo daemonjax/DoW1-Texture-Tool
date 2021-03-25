@@ -41,7 +41,7 @@ final class DoW1TextureTool
 
         switch (fileType)
         {
-            case MAP_SGB ->
+            case MAP_SGB:
             {
                 System.out.println(Strings.MAP_SGB_FILE);
                 String message;
@@ -120,11 +120,13 @@ final class DoW1TextureTool
                     
                     System.out.println(message);
                 }
+                break;
             }
-            case MODEL_WHE ->
+            case MODEL_WHE:
             {
                 System.out.println(Strings.MODEL_WHE_FILE);
-                Error.NOT_IMPLEMENTED.exit();
+                Error.NOT_IMPLEMENTED.exit(); 
+                break;
             }
         }
 

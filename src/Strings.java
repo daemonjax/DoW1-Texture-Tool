@@ -22,13 +22,11 @@
 final class Strings
 {
     static final String VERSION = "DoW1 Texture Tool v1.0.1";
-    static final String LICENSE_INFO = "\n" + VERSION + 
-                                       """                                                        
-                                         Copyright (C) 2021  Daemonjax
-                                       This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
-                                       are welcome to redistribute it under certain conditions.  See included LICENSE
-                                       file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html
-                                       """;
+    static final String LICENSE_INFO = "\n" + VERSION + "  Copyright (C) 2021  Daemonjax\n" +
+                                       "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you\n" +
+                                       "are welcome to redistribute it under certain conditions.  See included LICENSE\n" +
+                                       "file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html";
+                                       
     static final String USAGE = LICENSE_INFO + "\nUsage:\nDoW1TextureTool \"<FILEPATH>\" <TARGET> <COMMAND>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
     static final String COMMAND = "Command: ";
     static final String TARGET  = "Target: ";
@@ -54,13 +52,12 @@ final class Strings
     static final String SAVING_FILE = "Saving modified file to: ";
     static final String INFO_DONE = "No files have been modified.";
     static final String EXTENSION = ".dow1tt";
-    static final String FULL_EXAMPLES = """
-                                        Full Examples:
-                                        "C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -info
-                                        "C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -decal="art/decals/z_all/terrain_dust_02" -info
-                                        "C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -decal="art/decals/z_all/terrain_dust_02" -mul=0.5
-                                        NOTE: The -set command is not yet implemented, and neither is .WHE model file support.
-                                        """;
+    static final String FULL_EXAMPLES = "\nFull Examples:\n" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -info" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -info" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5" + 
+                                        "NOTE: The -set command is not yet implemented, and neither is .WHE model file support.";
+                                        
     private Strings(){}
 
     private static final String getCommandList()
