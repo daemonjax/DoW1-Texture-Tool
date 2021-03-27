@@ -43,6 +43,6 @@ enum FileType
             if (s1.equalsIgnoreCase(".whw")) return FileType.MODEL_WHE;
         }
 
-        Error.FILETYPE_GET.exit(); return null;
+        return (FileType)Error.FILETYPE_GET.exit(new Exception());
     }
 }

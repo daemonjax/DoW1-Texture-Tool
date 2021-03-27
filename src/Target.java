@@ -25,7 +25,7 @@ enum Target
     static final Target[] VALUES = Target.values();
     final String text;
 
-    private Target(String text) { this.text = text; }
+    private Target(final String text) { this.text = text; }
 
 
     static final Target get(final String s)
@@ -34,19 +34,21 @@ enum Target
 
         if (length >= MIN_TARGET_LENGTH)
         {
-            if (s.equalsIgnoreCase(INFO.text))  { return INFO;  }
-            if (s.startsWith(DECAL.text + Strings.EQUAL_SIGN) && (length > DECAL.text.length() + 1)) { return DECAL; }
+            if (s.startsWith(DECAL.text + Strings.EQUAL_SIGN) && (length > DECAL.text.length() + 1)) return DECAL;
+            if (s.equalsIgnoreCase(INFO.text)) return INFO;
         }
 
-        Error.PROCESS_TARGET.exit(); return null;
+        return (Target)Error.PROCESS_TARGET.exit(new Exception());
+    }
+
+    final String getValueFromArg(final String[] args)
+    {
+        return args[DoW1TextureTool.Arg.TARGET.ordinal()].substring(args[DoW1TextureTool.Arg.TARGET.ordinal()].indexOf('=') + 1);
     }
 
     final String getExample()
     {
-        switch (this)
-        {
-            case DECAL: return Strings.TARGET_EXAMPLE_DECAL; 
-            default   : return Strings.EMPTY;
-        }
+        if (this ==  DECAL) return Strings.TARGET_EXAMPLE_DECAL;
+        return Strings.EMPTY;
     }
 }

@@ -20,20 +20,27 @@
  */
 enum Error
 {
-    ARGSINVALID("!!!Fatal error while processing arguements!!!"),
-    PROCESS_FILE("!!!Error opening file.  Either it doesn't exist, it's not a file, it can't be accessed, or it contains 0 bytes!!!"),
-    FILEREAD("!!!Error reading file.  Unknown reason!!!"),
-    FILENAMELENGTH("!!!Fatal error inspecting file.  Filename length too short.  It needs to be at least " + FileType.MIN_FILENAME_LENGTH + " characters long in total!!!"),
-    FILETYPE_GET("!!!Fatal Error while getting filetype!!!"),
-    PROCESS_TARGET("!!!Fatal Error: Invalid target!!!"),
-    PROCESS_COMMAND("!!!Fatal error while processing command!!!"),
-    COMMAND_INVALID("!!!Fatal error: You used an invalid command for the filetype detected.  For example, the -set command can only be used on .WHE model files!!!"),
-    NODE_UNIQUE_ID("!!!Fatal programmer error: You can't get the relative offset of this node's UNIQUE_ID this way because you have to know the value at NUM_PATH_CHAR!!!"),
-    COMMAND_GET("!!!Fatal error while getting command from arguements string!!!"),
-    UNIQUE_ID_NOT_FOUND("!!!Fatal error while looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map!!!"),
-    COMMAND_MULTIPLY("!!!Fatal error while parsing the number for the multiplier.  It doesn't seem to be a proper number!!!"),
-    SAVEFILE("!!!Fatal error while saving file!!!"),
-    NOT_IMPLEMENTED("!!!Attempting to use an unimplemented feature!!!"),
+    CONFIG_FILE_BAD("Unable to read config file " + Strings.CONFIG_FILENAME + ".  Using " + Strings.CONFIG_FILENAME_DEFAULT + " instead"),
+    CONFIG_FILE_DEFAULT_BAD("Unable to read the default config file " + Strings.CONFIG_FILENAME_DEFAULT + ": Either it doesn't exist, it's not a file, it can't be read, or it's empty"),
+    CONFIG_FILEREAD("Unable to read the configuration .ini file.  Unknown reason"),
+    CONFIG_BAD("Config file does not contain the expected number of settings (" + Config.Keys.VALUES.length +
+               ").\nTake a look at the default config file to help figure out what's wrong, or just\n" +
+               "delete both the .ini file and .default file and run again to recreate the .default file"),
+    CONFIG_WRITING_DEFAULTS("Unable to create a new " + Strings.CONFIG_FILENAME_DEFAULT +" file.  Unknown reason"),
+    ARGSINVALID("While processing arguements"),
+    PROCESS_FILE("Unable to open the file.  Either it doesn't exist, it's not a file, it can't be accessed, or it contains 0 bytes"),
+    FILEREAD("Unable to read the file.  Unknown reason"),
+    FILETYPE_GET("While getting filetype"),
+    PROCESS_TARGET("Invalid target"),
+    PROCESS_COMMAND("While processing command"),
+    COMMAND_INVALID("You used an invalid command for the filetype detected.  For example, the -set command can only be used on .WHE model files"),
+    PROGRAMMER_NODE_UNIQUE_ID("!!!Programmer Error!!!  You can't get the relative offset of this node's UNIQUE_ID this way because you have to know the value at NUM_PATH_CHAR"),
+    PROGRAMMER_ENUM("!!!Programmer Error!!!  Didn't list all enum types in switch statement."),
+    COMMAND_GET("While getting command from arguements string"),
+    UNIQUE_ID_NOT_FOUND("While looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map"),
+    PARSE_COMMAND("While parsing the number for this command.  It doesn't seem to be a proper number"),
+    SAVEFILE("While saving file"),
+    NOT_IMPLEMENTED("Attempting to use an unimplemented feature"),
     NOT_AN_ERROR(Strings.EMPTY);
 
     private final String message;
@@ -41,21 +48,41 @@ enum Error
     private Error(String message) { this.message = message; }
 
 
-    final void exit()
+    final Object exit()
     {
-        System.out.println(Strings.NEWLINE + this.message + Strings.NEWLINE + Strings.USAGE + Strings.NEWLINE + Strings.FULL_EXAMPLES);
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(this.message).append(Strings.NEWLINE).append(Strings.USAGE).append(Strings.NEWLINE).append(Strings.FULL_EXAMPLES);
+        System.out.println(Utils.sb.toString());
         System.exit(1);
-    }
-    
-    final void cleanExit()
-    {
-        System.out.println(Strings.NEWLINE + this.message + Strings.USAGE + Strings.NEWLINE + Strings.FULL_EXAMPLES);
-        System.exit(0);
+        /*UNREACHABLE*/ return null;
     }
 
-    /*final void exit(final String s)
+    final Object exit(Exception e)
     {
-        System.out.println(this.message + Strings.NEWLINE + s + Strings.NEWLINE + Strings.USAGE + Strings.NEWLINE + Strings.FULL_EXAMPLES);
-        System.exit(1);
-    }*/
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName()).append(Strings.NEWLINE);
+        return exit();
+    }
+
+    final Object exit(final String messsage)
+    {
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message).append(Strings.NEWLINE);
+        return exit();
+    }
+
+    final Object exit(Exception e, final String messsage)
+    {
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName()).append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message);
+        return exit();
+    }
+
+    final void warn()
+    {
+        Utils.sb.append(Strings.NEWLINE).append(Strings.WARNING).append(message).append(Strings.NEWLINE);
+    }
+
+    final void cleanExit()
+    {
+        Utils.sb.append(Strings.NEWLINE).append(this.message).append(Strings.USAGE).append(Strings.NEWLINE).append(Strings.FULL_EXAMPLES);
+        System.out.println(Utils.sb.toString());
+        System.exit(0);
+    }
 }

@@ -20,7 +20,7 @@
  */
 enum Command
 {
-    INFO(Target.INFO.text), MULTIPLY("-mul"), SET("-set");
+    MULTIPLY("-mul"), SET("-set"), INFO(Target.INFO.text);
     private static final int COMMAND_MIN_LENGTH = 5;
     final String text;
 
@@ -31,7 +31,7 @@ enum Command
         final Command[] validCommands = f.validCommands;
         final int length = validCommands.length;
 
-        for (int i = 0; i < length; ++i) if (this == validCommands[i]) return true;
+        for (int i = 0; i < length; ++i) { if (this == validCommands[i]) return true; }
         return false;
     }
 
@@ -39,26 +39,43 @@ enum Command
 
     static final Command get(final String s)
     {
-        final int length = s.length();
-        if (length >= COMMAND_MIN_LENGTH)
+        if (s.length() >= COMMAND_MIN_LENGTH)
         {
             final String s1 = s.substring(0, COMMAND_MIN_LENGTH);
 
-            if      (s1.equalsIgnoreCase(INFO.text                         )) { return INFO;     }
-            else if (s1.equalsIgnoreCase(MULTIPLY.text + Strings.EQUAL_SIGN)) { return MULTIPLY; }
+            if      (s1.equalsIgnoreCase(MULTIPLY.text + Strings.EQUAL_SIGN)) { return MULTIPLY; }
             else if (s1.equalsIgnoreCase(SET.text      + Strings.EQUAL_SIGN)) { return SET;      }
+            else if (s1.equalsIgnoreCase(INFO.text                         )) { return INFO;     }
         }
-
-        Error.COMMAND_GET.exit(); return null;
+        return (Command)Error.COMMAND_GET.exit(new Exception());
     }
 
     final String getExample()
     {
         switch (this)
         {
-            case MULTIPLY: return Strings.COMMAND_EXAMPLE_MULTIPLY; 
+            case MULTIPLY: return Strings.COMMAND_EXAMPLE_MULTIPLY;
             case SET     : return Strings.COMMAND_EXAMPLE_SET;
-            default      : return Strings.EMPTY; 
+            case INFO    : return Strings.EMPTY;
         }
+        return (String)Error.PROGRAMMER_ENUM.exit(new Exception());
+    }
+
+    final float getValueFromArg(String[] args)
+    {
+        switch (this)
+        {
+            case MULTIPLY:
+            case SET:
+            {
+                final String arg = args[DoW1TextureTool.Arg.COMMAND.ordinal()];
+                try
+                {
+                    return Float.valueOf(arg.substring(arg.indexOf('=') + 1).strip());
+                } catch (Exception e) { return (float)Error.PARSE_COMMAND.exit(e, arg); }
+            }
+            case INFO: return 1.0f;
+        }
+        return (float)Error.PROGRAMMER_ENUM.exit(new Exception());
     }
 }

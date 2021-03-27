@@ -1,5 +1,9 @@
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.DecimalFormat;
+import java.time.Duration;
+import java.time.Instant;
 
 /*  DoW1 Texture Tool
     Copyright (C) 2021  Daemonjax
@@ -23,10 +27,10 @@ import java.nio.ByteOrder;
  */
 final class Utils
 {
-    private static final String FORMAT = "%02x ";
-
+    static final StringBuilder sb = new StringBuilder(4096);
 
     private Utils() {}
+
 
     static final int getBEintFromLEbytes(byte[] array, final int startIndex)
     {
@@ -57,14 +61,13 @@ final class Utils
         return result;
     }
 
-    /*static final String getFormattedStringFromBytes(final byte[] array, final int startIndex)
+    static final File getNotEmptyFile(final String fileName)
     {
-        return  String.format(FORMAT, array[startIndex    ]) +
-                String.format(FORMAT, array[startIndex + 1]) +
-                String.format(FORMAT, array[startIndex + 2]) +
-                String.format(FORMAT, array[startIndex + 3]);
-    }*/
-    
+        final File result = new File(fileName);
+
+        if (result.canRead() && result.isFile() && result.length() > 0) return result;
+        return null;
+    }
 
     static final int indexOf(final byte[] pattern, final byte[] data, final int startIndex)  // naive implementation, but guaranteed to work
     {
@@ -90,6 +93,21 @@ final class Utils
 
         return -1;
     }
+
+    static final void timer(final Instant start, final Instant stop)
+    {
+        final Duration duration = Duration.between(start, stop);
+        if (duration.getSeconds() == 0) System.out.println("Time elapsed: " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.");
+        else System.out.println("This run took: " + duration.getSeconds() + " seconds, and " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.");
+    }
+
+    /*static final String getFormattedStringFromBytes(final byte[] array, final int startIndex)
+    {
+        return  String.format(FORMAT, array[startIndex    ]) +
+                String.format(FORMAT, array[startIndex + 1]) +
+                String.format(FORMAT, array[startIndex + 2]) +
+                String.format(FORMAT, array[startIndex + 3]);
+    }*/
 }
 
 /*static final int indexOf_kmp(final byte[] pattern, final byte[] data, final int startIndex) // Uses KMP Algorithm

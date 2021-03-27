@@ -58,18 +58,8 @@ public class DataEnty
 
     static final void setDecalSize(final byte[] mapFileBytes, final int offset, final float newSize)
     {
-        final int temp   = Float.floatToRawIntBits(newSize);
+        final int temp = Float.floatToRawIntBits(newSize);
         mapFileBytes[offset    ] = (byte)((temp       ) & 0xFF); mapFileBytes[offset + 1] = (byte)((temp >>>  8) & 0xFF);
         mapFileBytes[offset + 2] = (byte)((temp >>> 16) & 0xFF); mapFileBytes[offset + 3] = (byte)((temp >>> 24) & 0xFF);
-    }
-
-    static final float validateSetFloat(final float f)
-    {
-
-        if (f > 0.05            ) return (float)0.05;
-        if (f > 0.04 && f < 0.05) return (float)0.04;
-        if (f > 0.03 && f < 0.04) return (float)0.03;
-
-        return (float)0.02;
     }
 }
