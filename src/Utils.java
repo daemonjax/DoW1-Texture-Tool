@@ -97,8 +97,8 @@ final class Utils
     static final void displayTimer(final Instant start, final Instant stop)
     {
         final Duration duration = Duration.between(start, stop);
-        if (duration.getSeconds() == 0) System.out.println("Time elapsed: " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.");
-        else System.out.println("This run took: " + duration.getSeconds() + " seconds, and " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.");
+        if (duration.getSeconds() == 0) System.out.println("Time elapsed: " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.\n");
+        else System.out.println("Time elapsed: " + duration.getSeconds() + " seconds, and " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.\n");
     }
 
     /*static final String getFormattedStringFromBytes(final byte[] array, final int startIndex)

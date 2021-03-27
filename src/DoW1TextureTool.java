@@ -70,8 +70,8 @@ final class DoW1TextureTool
                     numNodes = DataEnty.getNumNodes(fileBytes, offset);
                     offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
 
-                    if (command == Command.MULTIPLY) Utils.sb.append(Strings.MULTIPLY_MESSAGE_1).append(multiplier);
-                    else Utils.sb.append(Strings.INFO_MESSAGE_1);
+                    if (command == Command.MULTIPLY) Utils.sb.append(Strings.MULTIPLY_MESSAGE_1).append(multiplier).append(Strings.NEWLINE);
+                    else Utils.sb.append(Strings.INFO_MESSAGE_1).append(Strings.NEWLINE);
 
                     counters = applyMultiplier(fileBytes, offset, numNodes, uniqueID, command, multiplier);
 
@@ -105,6 +105,7 @@ final class DoW1TextureTool
         }
 
         Utils.sb.append(Strings.ALL_DONE);
+
         if (target != Target.INFO && command != Command.INFO)
         {
             File savefile = null;
@@ -115,7 +116,7 @@ final class DoW1TextureTool
                 if (!savefile.exists()) break;
             }
 
-            if (savefile != null) Utils.sb.append(Strings.SAVING_FILE).append(savefile.getPath()).append(Strings.NEWLINE);
+            if (savefile != null) Utils.sb.append(Strings.SAVING_FILE).append(savefile.getPath());
             else { Error.SAVEFILE.exit(new Exception()); /*UNREACHABLE*/ return; }
             try { Files.write(savefile.toPath(), fileBytes); } catch (Exception e) { Error.SAVEFILE.exit(e); /*UNREACHABLE*/ return; }
         }
