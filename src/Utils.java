@@ -94,7 +94,7 @@ final class Utils
         return -1;
     }
 
-    static final void timer(final Instant start, final Instant stop)
+    static final void displayTimer(final Instant start, final Instant stop)
     {
         final Duration duration = Duration.between(start, stop);
         if (duration.getSeconds() == 0) System.out.println("Time elapsed: " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.");

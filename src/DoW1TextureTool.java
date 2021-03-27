@@ -124,7 +124,7 @@ final class DoW1TextureTool
         System.out.println(Utils.sb.toString());
 
         stop = Instant.now();
-        Utils.timer(start, stop);
+        Utils.displayTimer(start, stop);
     }
 
     static final String[] processConfig()
