@@ -56,7 +56,18 @@ final class DoW1TextureTool
                 int numNodes = DataSMap.getNumNodes(fileBytes, offset);
                 offset += DataSMap.Header.TOTAL_SIZE;
 
-                if (target != Target.INFO && (command == Command.MULTIPLY || command == Command.INFO))
+                if (target == Target.INFO)
+                {
+                    Utils.sb.append(Strings.TARGET_INFO).append(Strings.NEWLINE);
+
+                    for (int i = 0, thisDecalPathCharsLength; i < numNodes; ++i)
+                    {
+                        thisDecalPathCharsLength = Utils.getBEintFromLEbytes(fileBytes, offset);
+                        Utils.sb.append(DataSMap.getDecalPathChars(fileBytes, offset, thisDecalPathCharsLength)).append(Strings.NEWLINE);
+                        offset = DataSMap.nextDecalTypesNodeOffset(offset, thisDecalPathCharsLength);
+                    }
+                }
+                else if (command != Command.SET)
                 {
                     final float multiplier = command.getValueFromArg(args);
                     final byte[] targetDecalPathChars = Utils.getBytesFromChars(target.getValueFromArg(args).toCharArray());
@@ -82,17 +93,6 @@ final class DoW1TextureTool
                     }
                     else Utils.sb.append(Strings.INFO_MESSAGE_NUM_DECALS_FOUND).append(counters[0]);
                 }
-                else
-                {
-                    Utils.sb.append(Strings.TARGET_INFO).append(Strings.NEWLINE);
-
-                    for (int i = 0, thisDecalPathCharsLength; i < numNodes; ++i)
-                    {
-                        thisDecalPathCharsLength = Utils.getBEintFromLEbytes(fileBytes, offset);
-                        Utils.sb.append(DataSMap.getDecalPathChars(fileBytes, offset, thisDecalPathCharsLength)).append(Strings.NEWLINE);
-                        offset = DataSMap.nextDecalTypesNodeOffset(offset, thisDecalPathCharsLength);
-                    }
-                }
 
                 break;
             }
@@ -106,7 +106,8 @@ final class DoW1TextureTool
 
         Utils.sb.append(Strings.ALL_DONE);
 
-        if (target != Target.INFO && command != Command.INFO)
+        if (target == Target.INFO || command == Command.INFO) Utils.sb.append(Strings.INFO_DONE);
+        else
         {
             File savefile = null;
 
@@ -120,7 +121,6 @@ final class DoW1TextureTool
             else { Error.SAVEFILE.exit(new Exception()); /*UNREACHABLE*/ return; }
             try { Files.write(savefile.toPath(), fileBytes); } catch (Exception e) { Error.SAVEFILE.exit(e); /*UNREACHABLE*/ return; }
         }
-        else { Utils.sb.append(Strings.INFO_DONE); }
 
         System.out.println(Utils.sb.toString());
 
@@ -188,6 +188,8 @@ final class DoW1TextureTool
         final Command result;
         final String s;
 
+        if (target == Target.INFO) return Command.INFO;
+
         if (args.length > Arg.COMMAND.ordinal())
         {
             s = args[Arg.COMMAND.ordinal()];
@@ -196,8 +198,6 @@ final class DoW1TextureTool
             if (result.isValidFor(fileType)) return result;
             Error.COMMAND_INVALID.exit(new Exception());
         }
-
-        if (target == Target.INFO) return Command.INFO;
 
         return (Command)Error.PROCESS_COMMAND.exit(new Exception());
     }
@@ -219,14 +219,14 @@ final class DoW1TextureTool
                 if (command == Command.MULTIPLY)
                 {
                     decalSize *= multiplier;
-                    if (decalSize >= MIN_DECAL_SIZE) DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
-                    else
+                    if (decalSize < MIN_DECAL_SIZE)
                     {
-                        DataEnty.setDecalSize(fileBytes, decalSizeOffset, MIN_DECAL_SIZE);
+                        decalSize = MIN_DECAL_SIZE;
                          ++decalMinSizeCounter;
                     }
+                    DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
                 }
-                else { Utils.sb.append(decalSize).append(Strings.NEWLINE); }
+                else Utils.sb.append(decalSize).append(Strings.NEWLINE);
                 ++counter;
             }
         }
@@ -241,10 +241,10 @@ final class DoW1TextureTool
         {
             thisDecalPathCharsLength = Utils.getBEintFromLEbytes(fileBytes, dataSMapNodeOffset + DataSMap.Node.DECAL_PATH_CHARS_LENGTH.relativeOffset);
 
-            if (targetDecalPathCharsLength != thisDecalPathCharsLength) continue;
-            if (!areDecalPathCharsEqual(targetDecalPathChars, targetDecalPathCharsLength, fileBytes, dataSMapNodeOffset + DataSMap.Node.DECAL_PATH_CHARS.relativeOffset)) continue;
-
-            return dataSMapNodeOffset + DataSMap.Node.DECAL_PATH_CHARS.relativeOffset + targetDecalPathCharsLength;
+            if (targetDecalPathCharsLength == thisDecalPathCharsLength && areDecalPathCharsEqual(targetDecalPathChars, targetDecalPathCharsLength, fileBytes, dataSMapNodeOffset + DataSMap.Node.DECAL_PATH_CHARS.relativeOffset))
+            {
+                return dataSMapNodeOffset + DataSMap.Node.DECAL_PATH_CHARS.relativeOffset + targetDecalPathCharsLength;
+            }
         }
         return (int)Error.UNIQUE_ID_NOT_FOUND.exit(new Exception());
     }
