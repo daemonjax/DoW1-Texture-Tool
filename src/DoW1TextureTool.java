@@ -210,8 +210,7 @@ final class DoW1TextureTool
 
         for (int i = 0, decalSizeOffset; i < numNodes; ++i, offset += DataEnty.Node.TOTAL_SIZE)
         {
-            if (uniqueID[0] != fileBytes[offset] || uniqueID[1] != fileBytes[offset + 1] || uniqueID[2] != fileBytes[offset + 2] || uniqueID[3] != fileBytes[offset + 3]) continue;
-            else
+            if (uniqueID[0] == fileBytes[offset] && uniqueID[1] == fileBytes[offset + 1] && uniqueID[2] == fileBytes[offset + 2] && uniqueID[3] == fileBytes[offset + 3])
             {
                 decalSizeOffset = offset + DataEnty.Node.DECAL_SIZE.relativeOffset - DataEnty.Node.UNIQUE_ID.relativeOffset;
                 decalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
