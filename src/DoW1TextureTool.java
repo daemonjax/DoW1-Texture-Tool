@@ -212,6 +212,8 @@ final class DoW1TextureTool
         {
             if (uniqueID[0] == fileBytes[offset] && uniqueID[1] == fileBytes[offset + 1] && uniqueID[2] == fileBytes[offset + 2] && uniqueID[3] == fileBytes[offset + 3])
             {
+                 ++counter;
+
                 decalSizeOffset = offset + DataEnty.Node.DECAL_SIZE.relativeOffset - DataEnty.Node.UNIQUE_ID.relativeOffset;
                 decalSize = Utils.getBEfloatFromLEbytes(fileBytes, decalSizeOffset);
 
@@ -226,7 +228,6 @@ final class DoW1TextureTool
                     DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
                 }
                 else Utils.sb.append(decalSize).append(Strings.NEWLINE);
-                ++counter;
             }
         }
 
