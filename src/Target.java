@@ -20,7 +20,7 @@
  */
 enum Target
 {
-    INFO("-info"), DECAL("-decal");
+    INFO("-info"), DECAL("-decal"), LIST("-list");
     static final int MIN_TARGET_LENGTH = 5;
     static final Target[] VALUES = Target.values();
     final String text;
@@ -34,8 +34,9 @@ enum Target
 
         if (length >= MIN_TARGET_LENGTH)
         {
-            if (s.startsWith(DECAL.text + Strings.EQUAL_SIGN) && (length > DECAL.text.length() + 1)) return DECAL;
-            if (s.equalsIgnoreCase(INFO.text)) return INFO;
+            if (s.startsWith(DECAL.text + Strings.EQUAL_SIGN) && (length > DECAL.text.length() + 2)) return DECAL;
+            if (s.startsWith(LIST.text + Strings.EQUAL_SIGN) && (length > LIST.text.length() + 2)) return LIST;
+            if (s.equals(INFO.text)) return INFO;
         }
 
         return (Target)Error.PROCESS_TARGET.exit(new Exception());

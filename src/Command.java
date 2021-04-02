@@ -39,13 +39,15 @@ enum Command
 
     static final Command get(final String s)
     {
+        final int length = s.length();
+
         if (s.length() >= COMMAND_MIN_LENGTH)
         {
-            final String s1 = s.substring(0, COMMAND_MIN_LENGTH);
+            //final String s1 = s.substring(0, COMMAND_MIN_LENGTH);
 
-            if      (s1.equalsIgnoreCase(MULTIPLY.text + Strings.EQUAL_SIGN)) { return MULTIPLY; }
-            else if (s1.equalsIgnoreCase(SET.text      + Strings.EQUAL_SIGN)) { return SET;      }
-            else if (s1.equalsIgnoreCase(INFO.text                         )) { return INFO;     }
+            if (s.startsWith(MULTIPLY.text + Strings.EQUAL_SIGN) && (length > MULTIPLY.text.length() + 2)) return MULTIPLY;
+            if (s.startsWith(SET.text + Strings.EQUAL_SIGN) && (length > SET.text.length() + 2)) return SET;
+            if (s.equals(INFO.text)) return INFO;
         }
         return (Command)Error.COMMAND_GET.exit(new Exception());
     }

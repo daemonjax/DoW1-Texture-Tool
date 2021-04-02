@@ -207,7 +207,7 @@ final class DoW1TextureTool
         {
             s = args[ordinal] = args[ordinal].replace('\\', '/');
             Utils.sb.append(Strings.TARGET).append(s).append(Strings.NEWLINE);
-            return Target.get(s);
+            return Target.get(s.toLowerCase());
         }
 
         return (Target)Error.PROCESS_TARGET.exit(new Exception());
@@ -224,7 +224,7 @@ final class DoW1TextureTool
         {
             s = args[Arg.COMMAND.ordinal()];
             Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);
-            result = Command.get(s);
+            result = Command.get(s.toLowerCase());
             if (result.isValidFor(fileType)) return result;
             Error.COMMAND_INVALID.exit(new Exception());
         }
