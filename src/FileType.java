@@ -39,8 +39,8 @@ enum FileType
         {
             final String s1 = s.substring(length - MIN_FILENAME_LENGTH, length);
 
-            if (s1.equalsIgnoreCase(".sgb")) return FileType.MAP_SGB;
-            if (s1.equalsIgnoreCase(".whw")) return FileType.MODEL_WHE;
+            if (s1.equalsIgnoreCase(Strings.FILE_MAP)) return FileType.MAP_SGB;
+            if (s1.equalsIgnoreCase(Strings.FILE_MODEL)) return FileType.MODEL_WHE;
         }
 
         return (FileType)Error.FILETYPE_GET.exit(new Exception());

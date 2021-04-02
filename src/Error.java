@@ -29,6 +29,8 @@ enum Error
     CONFIG_WRITING_DEFAULTS("Unable to create a new " + Strings.CONFIG_FILENAME_DEFAULT +" file.  Unknown reason"),
     ARGSINVALID("While processing arguements"),
     PROCESS_FILE("Unable to open the file.  Either it doesn't exist, it's not a file, it can't be accessed, or it contains 0 bytes"),
+    PROCESS_FILES("Unable to open a file in the folder.  Either it can't be accessed, or it contains 0 bytes"),
+    EMPTY_FOLDER("The folder provided does not contain any map files"),
     FILEREAD("Unable to read the file.  Unknown reason"),
     FILETYPE_GET("While getting filetype"),
     PROCESS_TARGET("Invalid target"),
