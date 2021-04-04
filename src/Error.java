@@ -64,19 +64,19 @@ enum Error
 
     final Object exit(Exception e)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName()).append(Strings.NEWLINE);
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method: ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit();
     }
 
     final Object exit(final String message)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message).append(Strings.NEWLINE);
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message);
         return exit();
     }
 
     final Object exit(Exception e, final String message)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName());
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method: ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit(message);
     }
 
