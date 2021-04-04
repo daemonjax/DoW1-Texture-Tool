@@ -1,6 +1,8 @@
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -27,7 +29,7 @@ import java.time.Instant;
  */
 final class Utils
 {
-    static final StringBuilder sb = new StringBuilder(4096);
+    static final StringBuilder sb = new StringBuilder(8192);
 
     private Utils() {}
 
@@ -99,6 +101,38 @@ final class Utils
         final Duration duration = Duration.between(start, stop);
         if (duration.getSeconds() == 0) System.out.println("Time elapsed: " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.\n");
         else System.out.println("Time elapsed: " + duration.getSeconds() + " seconds, and " + (new DecimalFormat("###,###,###")).format(duration.getNano()) + " nanoseconds.\n");
+    }
+
+    static final void save(final File file, final byte[] data, final String extension, final boolean overwrite)
+    {
+        File saveFile = null;
+
+        if (overwrite) saveFile = file;
+        else
+        {
+            for (int j = 1; j < 100; ++j, saveFile = null)
+            {
+                saveFile = new File(file.getPath() + extension + String.format(Strings.SAVE_FORMAT, j));
+                if (!saveFile.exists()) break;
+            }
+        }
+
+        if (saveFile != null) Utils.sb.append(Strings.INDENT).append(Strings.SAVING_FILE).append(saveFile.getPath()).append(Strings.NEWLINE);
+        else { Error.SAVEFILE.exit(new Exception(), file.getName()); /*UNREACHABLE*/ return; }
+        try { Files.write(saveFile.toPath(), data); } catch (Exception e) { Error.SAVEFILE.exit(e, saveFile.getName()); }
+    }
+
+    static final void outputAllMessages(boolean logToFile)
+    {
+        if (logToFile)
+        {
+            System.out.println(Strings.LOG_OUTPUT);
+            save(new File(Strings.LOGFILE), sb.toString().getBytes(StandardCharsets.UTF_8), Strings.EMPTY, true);
+        }
+        else
+        {
+            System.out.println(sb.toString());
+        }
     }
 
     /*static final String getFormattedStringFromBytes(final byte[] array, final int startIndex)

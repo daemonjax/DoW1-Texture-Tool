@@ -20,7 +20,7 @@
  */
 enum Command
 {
-    MULTIPLY("-mul"), SET("-set"), INFO(Target.INFO.text);
+    MULTIPLY(Strings.COMMAND_MULTIPLY_TEXT), SET(Strings.COMMAND_SET_TEXT), INFO(Strings.TARGET_INFO_TEXT);
     private static final int COMMAND_MIN_LENGTH = 5;
     final String text;
 
@@ -37,7 +37,7 @@ enum Command
 
     static final Command[] VALUES = Command.values();
 
-    static final Command get(final String s)
+    private static final Command get(final String s)
     {
         final int length = s.length();
 
@@ -50,6 +50,27 @@ enum Command
             if (s.equals(INFO.text)) return INFO;
         }
         return (Command)Error.COMMAND_GET.exit(new Exception());
+    }
+
+    //static final Command process(final String[] args, final FileType fileType, final Target target)
+    static final Command process(final String[] args, final FileType fileType, final Target target, final boolean doOutput)
+    {
+        final Command result;
+        final String s;
+        final int ordinal = DoW1TextureTool.Arg.COMMAND.ordinal();
+
+        if (target == Target.INFO) return Command.INFO;
+
+        if (args.length > ordinal)
+        {
+            s = args[ordinal];
+            if (doOutput) Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);
+            result = Command.get(s.toLowerCase());
+            if (result.isValidFor(fileType)) return result;
+            Error.COMMAND_INVALID.exit(new Exception());
+        }
+
+        return (Command)Error.PROCESS_COMMAND.exit(new Exception());
     }
 
     final String getExample()

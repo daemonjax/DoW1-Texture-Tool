@@ -26,7 +26,7 @@ final class Strings
                                        "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you\n" +
                                        "are welcome to redistribute it under certain conditions.  See included LICENSE\n" +
                                        "file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html";
-    static final String USAGE = LICENSE_INFO + "\n\nUsage:\nDoW1TextureTool \"<FILE or FOLDER PATH>\" <TARGET> <COMMAND>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
+    static final String USAGE = LICENSE_INFO + "\n\nUsage:\nDoW1TextureTool \"<FILE or FOLDER PATH>\" <TARGET> <COMMAND> <OPTION>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
     static final String FATAL_ERROR = ("!!!FATAL ERROR!!! ");
     static final String WARNING = ("Warning: ");
     static final String CONFIG_FILENAME = "DoW1TextureTool.ini";
@@ -39,15 +39,23 @@ final class Strings
     static final String CONFIG_KEY_EXTRACTED_DC   = "DC data folder";
     static final String CONFIG_KEY_EXTRACTED_SS   = "SS data folder";
     static final String COMMAND = "Command: ";
-    static final String TARGET  = "Target: ";
-    static final String FILE = "File: ";
+    static final String COMMAND_MULTIPLY_TEXT = "-mul";
+    static final String COMMAND_SET_TEXT = "-set";
+    static final String INDENT = "     ";
     static final String FILE_OR_FOLDER = "File/folder: ";
     static final String FILE_MODEL = ".whe";
     static final String FILE_MAP = ".sgb";
     static final String EQUAL_SIGN = "=";
     static final String NEWLINE = "\n";
     static final String LIST_SEPERATOR = " | ";
+    static final String ARG_LIST_DETECTED = "Detected arguement list file.";
+    static final String ARG_LIST_CHECKING = "Checking each line within the arguement list file for validity...";
+    static final String ARG_LIST_OK = "Info: The arguement list file looks OK upon initial inspection.";
     static final String MAP_SGB_FILE = "Map SGB file(s) detected.";
+    static final String TARGET  = "Target: ";
+    static final String TARGET_DECAL_TEXT = "-decal";
+    static final String TARGET_LIST_TEXT = "-list";
+    static final String TARGET_INFO_TEXT = "-info";
     static final String TARGET_INFO_1 = "Info: Here's a complete list of valid decal targets found in this map file (";
     static final String TARGET_INFO_2 = "): ";
     static final String MODEL_WHE_FILE = "Model WHE file detected.  Unfortunately this feature is not yet implemented.";
@@ -66,8 +74,11 @@ final class Strings
     static final String ALL_DONE = "\nAll done!  ";
     static final String SAVE_FORMAT = "-%02d";
     static final String SAVING_FILE = "Saving modified file to: ";
-    static final String INFO_DONE = "No files have been modified or created because of -info switch.";
-    static final String EXTENSION = ".dow1tt";
+    static final String LOGFILE = "DoW1tt.log";
+    static final String LOG_OUTPUT = "Writing output to logile: " + LOGFILE;
+    static final String INFO_DONE = "No files have been modified because of the -info switch.";
+    static final String EXTENSION_SAVE = ".dow1tt";
+
     static final String FULL_EXAMPLES = "Full Examples:\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -info\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -info\n" +

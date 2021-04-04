@@ -66,7 +66,7 @@ final class Config
 
         Utils.sb.append(Strings.CONFIG_CREATING_NEW);
 
-        try ( FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8)); )
+        try ( FileOutputStream fos = new FileOutputStream(file); BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8), 8192); )
         {
             for (int i = 0; i < length; ++i)
             {

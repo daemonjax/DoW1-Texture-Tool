@@ -1,11 +1,13 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.util.ArrayList;
 
 
 /*  DoW1 Texture Tool
@@ -30,19 +32,19 @@ import java.time.Instant;
  */
 final class DoW1TextureTool
 {
-    enum Arg { FILENAME, TARGET, COMMAND; }
+    enum Arg { FILENAME, TARGET, COMMAND, OPTIONS; }
     static final float MIN_DECAL_SIZE = 0.0105334455f;
+    static final int MIN_ARGUEMENTS = 3;
 
 
     private DoW1TextureTool(){}
 
-    static final class ThisFileNameFilter implements FilenameFilter
+    static final class DoWFileNameFilter implements FilenameFilter
     {
         private final String extension;
-        ThisFileNameFilter(String extension) { this.extension = extension.toLowerCase(); }
+        DoWFileNameFilter(String extension) { this.extension = extension.toLowerCase(); }
         @Override public boolean accept(File dir, String name) { return name.toLowerCase().endsWith(extension); }
     }
-
 
     public static final void main(final String[] args)
     {
@@ -51,75 +53,58 @@ final class DoW1TextureTool
         //final String[] config = processConfig();
         final File[] files = processFile(args);
         final FileType fileType = FileType.get(files[0]);
-        final Target target = processTarget(args);
-        final Command command = processCommand(args, fileType, target);
+        Target target = Target.process(args);
+        Command command;
+        final int optionMask = Option.getOptionMask(args, target);
+
+        String[][] argList;
+
+        if (target == Target.LIST)
+        {
+            Utils.sb.append(Strings.ARG_LIST_DETECTED).append(Strings.NEWLINE);
+            argList = getArgList(args[Arg.TARGET.ordinal()].substring(args[Arg.TARGET.ordinal()].indexOf('=') + 1).stripLeading(), args[0]);
+
+            if (args.length > Arg.COMMAND.ordinal() && args[Arg.COMMAND.ordinal()].equalsIgnoreCase(Command.INFO.text))
+            {
+                Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_CHECKING).append(Strings.NEWLINE).append(Strings.NEWLINE);
+                for (int i = 0; i < argList.length; ++i) { Command.process(argList[i], fileType, Target.process(argList[i]), true); }
+                Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_OK).append(Strings.NEWLINE);
+                Utils.outputAllMessages(Option.LOG.isSet(optionMask));
+                stop = Instant.now();
+                Utils.displayTimer(start, stop);
+                return;
+            }
+        }
+        else
+        {
+            argList = new String[1][args.length];
+            argList[0] = args;
+        }
+
+        final boolean doSave = (target != Target.INFO && Command.process(argList[0], fileType, target, false) != Command.INFO);
         byte[] fileBytes;
+
 
         switch (fileType)
         {
             case MAP_SGB:
             {
-                final int[] counters = new int[2];
-                final byte[] uniqueID = new byte[4];
-                String fileName;
-
-                Utils.sb.append(Strings.MAP_SGB_FILE).append(Strings.NEWLINE);
+                Utils.sb.append(Strings.MAP_SGB_FILE).append(Strings.NEWLINE).append(Strings.NEWLINE);
+                int bytesWereModified;
 
                 for (int i = 0; i < files.length; ++i)
                 {
                     try { fileBytes = Files.readAllBytes(files[i].toPath()); } catch (Exception e) { Error.FILEREAD.exit(e); /*UNCREACHABLE*/ return; }
-                    int offset = DataSMap.findStartingOffset(fileBytes, 0);
-                    int numNodes = DataSMap.getNumNodes(fileBytes, offset);
-                    offset += DataSMap.Header.TOTAL_SIZE;
-                    fileName = files[i].getName();
 
-                    if (target == Target.INFO)
+                    bytesWereModified = 0;
+                    for (int j = 0; j < argList.length; ++j)
                     {
-                        Utils.sb.append(Strings.NEWLINE).append(Strings.TARGET_INFO_1).append(fileName).append(Strings.TARGET_INFO_2).append(Strings.NEWLINE);
-
-                        for (int j = 0, thisDecalPathCharsLength; j < numNodes; ++j)
-                        {
-                            thisDecalPathCharsLength = Utils.getBEintFromLEbytes(fileBytes, offset);
-                            Utils.sb.append(DataSMap.getDecalPathChars(fileBytes, offset, thisDecalPathCharsLength)).append(Strings.NEWLINE);
-                            offset = DataSMap.nextDecalTypesNodeOffset(offset, thisDecalPathCharsLength);
-                        }
+                        target = Target.process(argList[j]);
+                        command = Command.process(argList[j], fileType, target, true);
+                        if (doMapOperation(files[i], fileBytes, target, command, argList[j])) ++bytesWereModified;
                     }
-                    else if (command != Command.SET)
-                    {
-                        final float multiplier = command.getValueFromArg(args);
-                        final byte[] targetDecalPathChars = Utils.getBytesFromChars(target.getValueFromArg(args).toCharArray());
-                        offset = getUniqueIDOffsetFromPathChars(fileBytes, targetDecalPathChars, numNodes, offset);
-
-                        if (offset < 0)
-                        {
-                            Utils.sb.append(Strings.UNIQUE_ID_NOT_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
-                            continue;
-                        }
-
-                        Utils.sb.append(Strings.UNIQUE_ID_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
-
-                        uniqueID[0] = fileBytes[offset]; uniqueID[1] = fileBytes[offset + 1]; uniqueID[2] = fileBytes[offset + 2]; uniqueID[3] = fileBytes[offset + 3];
-                        offset = DataEnty.findStartingOffset(fileBytes, offset + DataSMap.Node.NUM_BYTES_UNIQUE_ID);
-                        numNodes = DataEnty.getNumNodes(fileBytes, offset);
-                        offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
-
-                        if (command == Command.MULTIPLY) Utils.sb.append(Strings.MULTIPLY_MESSAGE_1).append(multiplier).append(Strings.NEWLINE);
-                        else Utils.sb.append(Strings.INFO_MESSAGE_1).append(Strings.NEWLINE);
-
-                        applyMultiplier(fileBytes, offset, numNodes, uniqueID, command, multiplier, counters);
-
-                        if (command == Command.MULTIPLY)
-                        {
-                            if (counters[1] == 0) Utils.sb.append(Strings.MULTIPLY_DECAL_COUNTER).append(counters[0]).append(Strings.NEWLINE);
-                            else Utils.sb.append(Strings.MULTIPLY_DECAL_COUNTER).append(counters[0]).append(Strings.NEWLINE).append(Strings.MULTIPLY_DECAL_MINSIZE_COUNTER).append(counters[1]).append(Strings.NEWLINE);
-                        }
-                        else Utils.sb.append(Strings.INFO_MESSAGE_NUM_DECALS_FOUND).append(counters[0]).append(Strings.NEWLINE);
-
-                        if (command == Command.INFO) Utils.sb.append(Strings.INFO_DONE).append(Strings.NEWLINE);
-                        else save(files[i], fileBytes);
-                    }
+                    if (doSave && bytesWereModified > 0) Utils.save(files[i], fileBytes, Strings.EXTENSION_SAVE, Option.OVERWRITE.isSet(optionMask));
                 }
-
                 break;
             }
             case MODEL_WHE:
@@ -131,8 +116,8 @@ final class DoW1TextureTool
         }
 
         Utils.sb.append(Strings.ALL_DONE).append(Strings.NEWLINE);
-
-        System.out.println(Utils.sb.toString());
+        if (!doSave) Utils.sb.append(Strings.INFO_DONE).append(Strings.NEWLINE);
+        Utils.outputAllMessages(Option.LOG.isSet(optionMask));
 
         stop = Instant.now();
         Utils.displayTimer(start, stop);
@@ -178,12 +163,12 @@ final class DoW1TextureTool
                 }
                 else // is a folder...
                 {
-                    final File[] result = f.listFiles(new ThisFileNameFilter(Strings.FILE_MAP));
+                    final File[] result = f.listFiles(new DoWFileNameFilter(Strings.FILE_MAP));
                     if (result.length > 0)
                     {
                         for (int i = 0; i < result.length; ++i)
                         {
-                            Utils.sb.append(Strings.FILE).append(result[i].getName()).append(Strings.NEWLINE);
+                            Utils.sb.append(Strings.INDENT).append(result[i].getName()).append(Strings.NEWLINE);
 
                             if (!(result[i].canRead()) || result[i].length() <= 0) return (File[])Error.PROCESS_FILES.exit(new Exception());
                         }
@@ -198,39 +183,130 @@ final class DoW1TextureTool
         return (File[])Error.ARGSINVALID.exit(new Exception());
     }
 
-    static final Target processTarget(final String[] args)
+    static final String[][] getArgList(final String argListFilename, final String firstArg)
     {
-        final String s;
-        final int ordinal = Arg.TARGET.ordinal();
+        final File f = Utils.getNotEmptyFile(argListFilename);
 
-        if (args.length > ordinal)
+        if (f != null)
         {
-            s = args[ordinal] = args[ordinal].replace('\\', '/');
-            Utils.sb.append(Strings.TARGET).append(s).append(Strings.NEWLINE);
-            return Target.get(s.toLowerCase());
+            ArrayList<String> arrayList = new ArrayList<>(32);
+
+            try (BufferedReader br = new BufferedReader(new FileReader(f), 8192))
+            {
+                String s;
+                while (br.ready())
+                {
+                    s = br.readLine().strip();
+                    if (!s.isEmpty() && s.charAt(0) != ';') arrayList.add(s);
+                }
+            }
+            catch (Exception e) { return (String[][])Error.FILEREAD.exit(e, f.getName()); }
+
+            String[][] result = new String[arrayList.size()][3];
+            int index, sLength;
+            String s;
+            final int length = arrayList.size();
+
+            if (length > 0)
+            {
+                for (int i = 0; i < length; ++i)
+                {
+                    result[i][0] = firstArg;
+                    s = arrayList.get(i);
+                    sLength = s.length();
+
+                    if (sLength > 8)
+                    {
+                        if (s.charAt(0) == '-')
+                        {
+                            index = s.indexOf('=', 2);
+                            if (index > 0)
+                            {
+                                index = s.indexOf(' ', index);
+                                if (index > 0)
+                                {
+                                    result[i][1] = s.substring(0, index);
+                                    index = s.indexOf('-', index);
+                                    if (index > 0)
+                                    {
+                                        if (s.indexOf('=', index) > 0)
+                                        {
+                                            result[i][2] = s.substring(index, sLength);
+                                            continue;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return (String[][])Error.ARG_LIST_BAD.exit(new Exception(), s);
+                }
+                return result;
+            }
+            return (String[][])Error.ARG_LIST_BAD.exit(new Exception());
         }
 
-        return (Target)Error.PROCESS_TARGET.exit(new Exception());
+        return (String[][])Error.ARG_LIST_DNE.exit(new Exception(), new File(argListFilename).getAbsolutePath());
     }
 
-    static final Command processCommand(final String[] args, final FileType fileType, final Target target)
+    static final boolean doMapOperation(final File file, final byte[] fileBytes, final Target target, final Command command, final String[] args)
     {
-        final Command result;
-        final String s;
+        final int[] counters = new int[2];
+        final byte[] uniqueID = new byte[4];
+        int offset = DataSMap.findStartingOffset(fileBytes, 0);
+        int numNodes = DataSMap.getNumNodes(fileBytes, offset);
+        offset += DataSMap.Header.TOTAL_SIZE;
+        String fileName = file.getName();
 
-        if (target == Target.INFO) return Command.INFO;
-
-        if (args.length > Arg.COMMAND.ordinal())
+        if (target == Target.INFO)
         {
-            s = args[Arg.COMMAND.ordinal()];
-            Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);
-            result = Command.get(s.toLowerCase());
-            if (result.isValidFor(fileType)) return result;
-            Error.COMMAND_INVALID.exit(new Exception());
+            Utils.sb.append(Strings.NEWLINE).append(Strings.TARGET_INFO_1).append(fileName).append(Strings.TARGET_INFO_2).append(Strings.NEWLINE);
+
+            for (int j = 0, thisDecalPathCharsLength; j < numNodes; ++j)
+            {
+                thisDecalPathCharsLength = Utils.getBEintFromLEbytes(fileBytes, offset);
+                Utils.sb.append(Strings.INDENT).append(DataSMap.getDecalPathChars(fileBytes, offset, thisDecalPathCharsLength)).append(Strings.NEWLINE);
+                offset = DataSMap.nextDecalTypesNodeOffset(offset, thisDecalPathCharsLength);
+            }
+        }
+        else if (command == Command.MULTIPLY || command == Command.INFO)
+        {
+            final byte[] targetDecalPathChars = Utils.getBytesFromChars(target.getValueFromArg(args).toCharArray());
+            offset = getUniqueIDOffsetFromPathChars(fileBytes, targetDecalPathChars, numNodes, offset);
+
+            if (offset < 0)
+            {
+                Utils.sb.append(Strings.UNIQUE_ID_NOT_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
+                return false;
+            }
+
+            Utils.sb.append(Strings.UNIQUE_ID_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
+
+            uniqueID[0] = fileBytes[offset]; uniqueID[1] = fileBytes[offset + 1]; uniqueID[2] = fileBytes[offset + 2]; uniqueID[3] = fileBytes[offset + 3];
+            offset = DataEnty.findStartingOffset(fileBytes, offset + DataSMap.Node.NUM_BYTES_UNIQUE_ID);
+            numNodes = DataEnty.getNumNodes(fileBytes, offset);
+            offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
+            final float multiplier = command.getValueFromArg(args);
+
+            if (command == Command.MULTIPLY) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_MESSAGE_1).append(multiplier).append(Strings.NEWLINE);
+            else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_1).append(Strings.NEWLINE);
+
+            applyMultiplier(fileBytes, offset, numNodes, uniqueID, command, multiplier, counters);
+
+
+            if (command == Command.MULTIPLY)
+            {
+                Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_COUNTER).append(counters[0]).append(Strings.NEWLINE);
+                if (counters[1] > 0) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_MINSIZE_COUNTER).append(counters[1]).append(Strings.NEWLINE);
+            }
+            else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_NUM_DECALS_FOUND).append(counters[0]).append(Strings.NEWLINE);
+
+            return true;
         }
 
-        return (Command)Error.PROCESS_COMMAND.exit(new Exception());
+        return false;
     }
+
 
     static final void applyMultiplier(final byte[] fileBytes, int offset, final int numNodes, final byte[] uniqueID, final Command command, final float multiplier, final int[] counters)
     {
@@ -257,7 +333,7 @@ final class DoW1TextureTool
                     }
                     DataEnty.setDecalSize(fileBytes, decalSizeOffset, decalSize);
                 }
-                else Utils.sb.append(decalSize).append(Strings.NEWLINE);
+                else Utils.sb.append(Strings.INDENT).append(Strings.INDENT).append(decalSize).append(Strings.NEWLINE);
             }
         }
 
@@ -285,21 +361,6 @@ final class DoW1TextureTool
     {
         for (int i = 0; i < patternlength; ++i) { if (pattern[i] != mapFileBytes[mapFileBytesOffset + i]) return false; }
         return true;
-    }
-
-    static final void save(File file, byte[] data)
-    {
-        File savefile = null;
-
-        for (int j = 1; j < 100; ++j, savefile = null)
-        {
-            savefile = new File(file.getPath() + Strings.EXTENSION + String.format(Strings.SAVE_FORMAT, j));
-            if (!savefile.exists()) break;
-        }
-
-        if (savefile != null) Utils.sb.append(Strings.SAVING_FILE).append(savefile.getPath()).append(Strings.NEWLINE);
-        else { Error.SAVEFILE.exit(new Exception()); /*UNREACHABLE*/ return; }
-        try { Files.write(savefile.toPath(), data); } catch (Exception e) { Error.SAVEFILE.exit(e); }
     }
 
 }

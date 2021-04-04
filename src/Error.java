@@ -28,6 +28,8 @@ enum Error
                "delete both the .ini file and .default file and run again to recreate the .default file"),
     CONFIG_WRITING_DEFAULTS("Unable to create a new " + Strings.CONFIG_FILENAME_DEFAULT +" file.  Unknown reason"),
     ARGSINVALID("While processing arguements"),
+    ARG_LIST_DNE("The arguement list file does not exist"),
+    ARG_LIST_BAD("The arguement list file structure is bad"),
     PROCESS_FILE("Unable to open the file.  Either it doesn't exist, it's not a file, it can't be accessed, or it contains 0 bytes"),
     PROCESS_FILES("Unable to open a file in the folder.  Either it can't be accessed, or it contains 0 bytes"),
     EMPTY_FOLDER("The folder provided does not contain any map files"),
@@ -41,7 +43,8 @@ enum Error
     COMMAND_GET("While getting command from arguements string"),
     UNIQUE_ID_NOT_FOUND("While looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map"),
     PARSE_COMMAND("While parsing the number for this command.  It doesn't seem to be a proper number"),
-    SAVEFILE("While saving file"),
+    BAD_OPTION("Bad options -- The letter is not a valid option or the option string doesn't start with a '-' character"),
+    SAVEFILE("While saving file "),
     NOT_IMPLEMENTED("Attempting to use an unimplemented feature"),
     NOT_AN_ERROR(Strings.EMPTY);
 
@@ -64,16 +67,16 @@ enum Error
         return exit();
     }
 
-    final Object exit(final String messsage)
+    final Object exit(final String message)
     {
         Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message).append(Strings.NEWLINE);
         return exit();
     }
 
-    final Object exit(Exception e, final String messsage)
+    final Object exit(Exception e, final String message)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName()).append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(message);
-        return exit();
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append(e.getStackTrace()[0].getMethodName());
+        return exit(message);
     }
 
     final void warn()
