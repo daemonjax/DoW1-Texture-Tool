@@ -74,6 +74,7 @@ final class DoW1TextureTool
                 Utils.displayTimer(start, stop);
                 return;
             }
+            else if (!Option.OVERWRITE.isSet(optionMask)) Error.LIST_REQUIRES_OVERWRITE.exit();
         }
         else
         {

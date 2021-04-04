@@ -65,6 +65,7 @@ enum Target
     final String getExample()
     {
         if (this ==  DECAL) return Strings.TARGET_EXAMPLE_DECAL;
+        if (this == LIST) return Strings.TARGET_EXAMPLE_LIST;
         return Strings.EMPTY;
     }
 }

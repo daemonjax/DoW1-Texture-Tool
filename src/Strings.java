@@ -21,12 +21,13 @@
  */
 final class Strings
 {
-    static final String VERSION = "DoW1 Texture Tool v1.0.1";
+    static final String VERSION = "DoW1 Texture Tool v1.3.0";
     static final String LICENSE_INFO = "\n" + VERSION + "  Copyright (C) 2021  Daemonjax\n" +
                                        "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you\n" +
                                        "are welcome to redistribute it under certain conditions.  See included LICENSE\n" +
                                        "file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html";
-    static final String USAGE = LICENSE_INFO + "\n\nUsage:\nDoW1TextureTool \"<FILE or FOLDER PATH>\" <TARGET> <COMMAND> <OPTION>\n\n" + getTargetList() + "\n" + getCommandList() + "\n";
+    static final String USAGE = LICENSE_INFO + "\n\nUsage:\nDoW1TextureTool \"<FILE or FOLDER PATH>\" <TARGET> <COMMAND> <OPTIONS>\n\n" +
+                                        getTargetList() + "\n" + getCommandList() + "\n" + getOptionList() + "\n";
     static final String FATAL_ERROR = ("!!!FATAL ERROR!!! ");
     static final String WARNING = ("Warning: ");
     static final String CONFIG_FILENAME = "DoW1TextureTool.ini";
@@ -52,6 +53,7 @@ final class Strings
     static final String ARG_LIST_CHECKING = "Checking each line within the arguement list file for validity...";
     static final String ARG_LIST_OK = "Info: The arguement list file looks OK upon initial inspection.";
     static final String MAP_SGB_FILE = "Map SGB file(s) detected.";
+    static final String OPTIONS = "Options: ";
     static final String TARGET  = "Target: ";
     static final String TARGET_DECAL_TEXT = "-decal";
     static final String TARGET_LIST_TEXT = "-list";
@@ -61,6 +63,7 @@ final class Strings
     static final String MODEL_WHE_FILE = "Model WHE file detected.  Unfortunately this feature is not yet implemented.";
     static final String EMPTY = "";
     static final String TARGET_EXAMPLE_DECAL = "=\"<decal file path>\"";
+    static final String TARGET_EXAMPLE_LIST = "=\"<arguement list file path>\"";
     static final String COMMAND_EXAMPLE_MULTIPLY = "=<float value>";
     static final String COMMAND_EXAMPLE_SET = "=<float value>";
     static final String UNIQUE_ID_FOUND = "Found unique ID for decal within this map (";
@@ -83,7 +86,8 @@ final class Strings
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -info\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -info\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5\n" +
-                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5\n" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5 -ol\n" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp\" -list=\"testArgList.DoW1tt\" -o\n" +
                                         "NOTE: The -set command is not yet implemented, and neither is .WHE model file support.\n";
     static final String SUCESS = "Success!  ";
 
@@ -117,5 +121,20 @@ final class Strings
         }
         t = Target.VALUES[length];
         return s + t.text + t.getExample();
+    }
+
+    private static final String getOptionList()
+    {
+        final int length = Option.VALUES.length - 1;
+        String s = Strings.OPTIONS + "-{ ";
+        Option o;
+
+        for(int i = 0; i < length; ++i)
+        {
+            o = Option.VALUES[i];
+            s += o.text + o.getExample() + Strings.LIST_SEPERATOR;
+        }
+        o = Option.VALUES[length];
+        return s + o.text + o.getExample() + " }\n     -o == overwrite files\n     -l == send output to logfile" ;
     }
 }

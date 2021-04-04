@@ -44,6 +44,7 @@ enum Error
     UNIQUE_ID_NOT_FOUND("While looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map"),
     PARSE_COMMAND("While parsing the number for this command.  It doesn't seem to be a proper number"),
     BAD_OPTION("Bad options -- The letter is not a valid option or the option string doesn't start with a '-' character"),
+    LIST_REQUIRES_OVERWRITE("You must use the -o option (overwrite files) when using the -list target."),
     SAVEFILE("While saving file "),
     NOT_IMPLEMENTED("Attempting to use an unimplemented feature"),
     NOT_AN_ERROR(Strings.EMPTY);
