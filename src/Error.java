@@ -64,7 +64,7 @@ enum Error
 
     final Object exit(Exception e)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method: ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit();
     }
 
@@ -76,7 +76,7 @@ enum Error
 
     final Object exit(Exception e, final String message)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method: ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit(message);
     }
 

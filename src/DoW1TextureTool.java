@@ -54,8 +54,8 @@ final class DoW1TextureTool
         final File[] files = processFile(args);
         final FileType fileType = FileType.get(files[0]);
         Target target = Target.process(args);
-        Command command;
-        final int optionMask = Option.getOptionMask(args, target);
+        Command command = (args.length > Arg.COMMAND.ordinal() && args[Arg.COMMAND.ordinal()].equalsIgnoreCase(Command.INFO.text)) ? Command.INFO : null;
+        final int optionMask = Option.getOptionMask(args, target, command);
 
         String[][] argList;
 
@@ -64,7 +64,7 @@ final class DoW1TextureTool
             Utils.sb.append(Strings.ARG_LIST_DETECTED).append(Strings.NEWLINE);
             argList = getArgList(args[Arg.TARGET.ordinal()].substring(args[Arg.TARGET.ordinal()].indexOf('=') + 1).stripLeading(), args[0]);
 
-            if (args.length > Arg.COMMAND.ordinal() && args[Arg.COMMAND.ordinal()].equalsIgnoreCase(Command.INFO.text))
+            if (command == Command.INFO)
             {
                 Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_CHECKING).append(Strings.NEWLINE).append(Strings.NEWLINE);
                 for (int i = 0; i < argList.length; ++i) { Command.process(argList[i], fileType, Target.process(argList[i]), true); }
@@ -82,7 +82,7 @@ final class DoW1TextureTool
             argList[0] = args;
         }
 
-        final boolean doSave = (target != Target.INFO && Command.process(argList[0], fileType, target, false) != Command.INFO);
+        final boolean doSave = (target != Target.INFO && command != Command.INFO);
         byte[] fileBytes;
 
 

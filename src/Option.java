@@ -27,10 +27,31 @@ enum Option
     private Option(final char text) { this.text = text; }
 
 
-    static final int getOptionMask(final String[] args, Target target)
+    static final int getOptionMask(final String[] args, Target target, Command command)
     {
         int result = 0;
-        final int ordinal = (target == Target.INFO || target == Target.LIST) ? DoW1TextureTool.Arg.OPTIONS.ordinal() - 1 : DoW1TextureTool.Arg.OPTIONS.ordinal();
+        final int ordinal;
+
+        if (target == Target.INFO && command == Command.INFO)
+        {
+            ordinal = DoW1TextureTool.Arg.OPTIONS.ordinal();
+        }
+        else if (target == Target.INFO && command == null)
+        {
+            ordinal = DoW1TextureTool.Arg.OPTIONS.ordinal() - 1;
+        }
+        else if  (target == Target.LIST && command == Command.INFO)
+        {
+            ordinal = DoW1TextureTool.Arg.OPTIONS.ordinal();
+        }
+        else if  (target == Target.LIST && command == null)
+        {
+            ordinal = DoW1TextureTool.Arg.OPTIONS.ordinal() - 1;
+        }
+        else
+        {
+            ordinal = DoW1TextureTool.Arg.OPTIONS.ordinal();
+        }
 
         if (args.length > ordinal)
         {
