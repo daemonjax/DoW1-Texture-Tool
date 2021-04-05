@@ -36,7 +36,7 @@ enum Error
     FILEREAD("Unable to read the file.  Unknown reason"),
     FILETYPE_GET("While getting filetype"),
     PROCESS_TARGET("Invalid target"),
-    PROCESS_COMMAND("While processing command"),
+    PROCESS_COMMAND("You didn't enter a command."),
     COMMAND_INVALID("You used an invalid command for the filetype detected.  For example, the -set command can only be used on .WHE model files"),
     PROGRAMMER_NODE_UNIQUE_ID("!!!Programmer Error!!!  You can't get the relative offset of this node's UNIQUE_ID this way because you have to know the value at NUM_PATH_CHAR"),
     PROGRAMMER_ENUM("!!!Programmer Error!!!  Didn't list all enum types in switch statement."),
@@ -44,10 +44,11 @@ enum Error
     UNIQUE_ID_NOT_FOUND("While looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map"),
     PARSE_COMMAND("While parsing the number for this command.  It doesn't seem to be a proper number"),
     BAD_OPTION("Bad options -- The letter is not a valid option or the option string doesn't start with a '-' character"),
+    LIST_CANNOT_CONTAIN_INFO("One or more lines in the aguement list file contains -info as a target.  This is not allowed."),
     LIST_REQUIRES_OVERWRITE("You must use the -o option (overwrite files) when using the -list target."),
     SAVEFILE("While saving file "),
     NOT_IMPLEMENTED("Attempting to use an unimplemented feature"),
-    NOT_AN_ERROR(Strings.EMPTY);
+    SHOW_USAGE(Strings.EMPTY);
 
     private final String message;
 

@@ -51,7 +51,7 @@ final class Strings
     static final String LIST_SEPERATOR = " | ";
     static final String ARG_LIST_DETECTED = "Detected arguement list file.";
     static final String ARG_LIST_CHECKING = "Checking each line within the arguement list file for validity...";
-    static final String ARG_LIST_OK = "Info: The arguement list file looks OK upon initial inspection.";
+    static final String ARG_LIST_OK = "The arguement list file looks OK upon initial inspection.";
     static final String MAP_SGB_FILE = "Map SGB file(s) detected.";
     static final String OPTIONS = "Options: ";
     static final String TARGET  = "Target: ";

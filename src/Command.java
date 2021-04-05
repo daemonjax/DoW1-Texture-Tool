@@ -61,7 +61,7 @@ enum Command
 
         if (target == Target.INFO) return Command.INFO;
 
-        if (args.length > ordinal)
+        if (args[ordinal] != null)
         {
             s = args[ordinal];
             if (doOutput) Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);

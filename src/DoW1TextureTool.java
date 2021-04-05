@@ -46,7 +46,7 @@ final class DoW1TextureTool
         @Override public boolean accept(File dir, String name) { return name.toLowerCase().endsWith(extension); }
     }
 
-    public static final void main(final String[] args)
+    public static final void main(String[] args)
     {
         final Instant stop;
         final Instant start = Instant.now();
@@ -54,8 +54,9 @@ final class DoW1TextureTool
         final File[] files = processFile(args);
         final FileType fileType = FileType.get(files[0]);
         Target target = Target.process(args);
-        Command command = (args.length > Arg.COMMAND.ordinal() && args[Arg.COMMAND.ordinal()].equalsIgnoreCase(Command.INFO.text)) ? Command.INFO : null;
-        final int optionMask = Option.getOptionMask(args, target, command);
+        args = preprocess(args, target);
+        final int optionMask = Option.getOptionMask(args);
+        Command command = (Command.INFO.text.equalsIgnoreCase(args[Arg.COMMAND.ordinal()])) ? Command.INFO : null;
 
         String[][] argList;
 
@@ -63,12 +64,20 @@ final class DoW1TextureTool
         {
             Utils.sb.append(Strings.ARG_LIST_DETECTED).append(Strings.NEWLINE);
             argList = getArgList(args[Arg.TARGET.ordinal()].substring(args[Arg.TARGET.ordinal()].indexOf('=') + 1).stripLeading(), args[0]);
+            Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_CHECKING).append(Strings.NEWLINE).append(Strings.NEWLINE);
+
+            Target t;
+            Command c;
+            for (int i = 0; i < argList.length; ++i)
+            {
+                t = Target.process(argList[i]);
+                c = Command.process(argList[i], fileType, t, true);
+                if (t == Target.INFO || c == Command.INFO) { Error.LIST_CANNOT_CONTAIN_INFO.exit(new Exception()); /*UNCREACHABLE*/ return; }
+            }
+            Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_OK).append(Strings.NEWLINE);
 
             if (command == Command.INFO)
             {
-                Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_CHECKING).append(Strings.NEWLINE).append(Strings.NEWLINE);
-                for (int i = 0; i < argList.length; ++i) { Command.process(argList[i], fileType, Target.process(argList[i]), true); }
-                Utils.sb.append(Strings.NEWLINE).append(Strings.ARG_LIST_OK).append(Strings.NEWLINE);
                 Utils.outputAllMessages(Option.LOG.isSet(optionMask));
                 stop = Instant.now();
                 Utils.displayTimer(start, stop);
@@ -122,6 +131,36 @@ final class DoW1TextureTool
 
         stop = Instant.now();
         Utils.displayTimer(start, stop);
+    }
+
+    static final String[] preprocess(final String[] args, Target target)
+    {
+
+        final int numArgs = args.length;
+        final int maxArgs = Arg.values().length;
+
+        if (numArgs < maxArgs)
+        {
+            final String[] result = new String[maxArgs];
+
+            for (int i = 0; i < numArgs; ++i) { result[i] = args[i]; }
+
+            if (target == Target.LIST)
+            {
+                final int commandOrdinal = Arg.COMMAND.ordinal();
+
+                if (numArgs > commandOrdinal && !result[commandOrdinal].equalsIgnoreCase(Command.INFO.text))
+                {
+                    result[Arg.OPTIONS.ordinal()] = result[commandOrdinal];
+                    result[commandOrdinal] = null;
+                }
+            }
+
+            return result;
+        }
+        else if (numArgs > maxArgs) return (String[])Error.ARGSINVALID.exit(new Exception(), String.valueOf(numArgs));
+
+        return args;
     }
 
     static final String[] processConfig()
@@ -180,7 +219,7 @@ final class DoW1TextureTool
             }
             Error.PROCESS_FILE.exit(new Exception());
         }
-        if (args.length == 0) Error.NOT_AN_ERROR.cleanExit();
+        if (args.length == 0) Error.SHOW_USAGE.cleanExit();
         return (File[])Error.ARGSINVALID.exit(new Exception());
     }
 
