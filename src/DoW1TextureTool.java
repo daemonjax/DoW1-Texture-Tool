@@ -32,10 +32,13 @@ import java.util.ArrayList;
  */
 final class DoW1TextureTool
 {
-    enum Arg { FILENAME, TARGET, COMMAND, OPTIONS; }
-    static final float MIN_DECAL_SIZE = 0.0105334455f;
-    static final int MIN_ARGUEMENTS = 3;
+    enum Arg
+    {
+        FILENAME, TARGET, COMMAND, OPTIONS;
+        static final Arg[] VALUES = values();
+    }
 
+    static final float MIN_DECAL_SIZE = 0.0105334455f;
 
     private DoW1TextureTool(){}
 
@@ -54,9 +57,9 @@ final class DoW1TextureTool
         final File[] files = processFile(args);
         final FileType fileType = FileType.get(files[0]);
         Target target = Target.process(args);
-        args = preprocess(args, target);
+        Command command = (args.length > Arg.COMMAND.ordinal() && Command.INFO.text.equalsIgnoreCase(args[Arg.COMMAND.ordinal()])) ? Command.INFO : null;
+        args = preprocessArgs(args, target, command);
         final int optionMask = Option.getOptionMask(args);
-        Command command = (Command.INFO.text.equalsIgnoreCase(args[Arg.COMMAND.ordinal()])) ? Command.INFO : null;
 
         String[][] argList;
 
@@ -133,11 +136,13 @@ final class DoW1TextureTool
         Utils.displayTimer(start, stop);
     }
 
-    static final String[] preprocess(final String[] args, Target target)
+    static final String[] preprocessArgs(final String[] args, Target target, Command command)
     {
 
+        final int commandOrdinal = Arg.COMMAND.ordinal();
         final int numArgs = args.length;
-        final int maxArgs = Arg.values().length;
+        final int maxArgs = Arg.VALUES.length;
+
 
         if (numArgs < maxArgs)
         {
@@ -147,9 +152,7 @@ final class DoW1TextureTool
 
             if (target == Target.LIST)
             {
-                final int commandOrdinal = Arg.COMMAND.ordinal();
-
-                if (numArgs > commandOrdinal && !result[commandOrdinal].equalsIgnoreCase(Command.INFO.text))
+                if (numArgs > commandOrdinal && command != Command.INFO)
                 {
                     result[Arg.OPTIONS.ordinal()] = result[commandOrdinal];
                     result[commandOrdinal] = null;
@@ -159,6 +162,8 @@ final class DoW1TextureTool
             return result;
         }
         else if (numArgs > maxArgs) return (String[])Error.ARGSINVALID.exit(new Exception(), String.valueOf(numArgs));
+
+        if (target == Target.LIST && command != Command.INFO) return (String[])Error.LIST_COMMAND_NOT_INFO.exit(new Exception(), args[commandOrdinal]);
 
         return args;
     }
