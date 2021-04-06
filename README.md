@@ -13,16 +13,19 @@ Definitely works with Dark Crusade files.  Should work with Soul Storm files (bu
 
 Feature list:
 * SGB MAP FILES:
-  * List the filenames for all decals used in a map
-  * List all the current sizes (as float value) of a specific decal used in a map
-  * Resize all instances of a specific decal used in a map by multiplying it by an arbitrary float value
+  * List the filenames for all decals used in a map (1.0)
+  * List all the current sizes (as float value) of a specific decal used in a map (1.0)
+  * Resize all instances of a specific decal used in a map by multiplying it by an arbitrary float value (1.0)
+  * Can Specify folder to affect all map file in that folder (1.3)
+  * Options (-o = overwrite, -l = log output to file) (1.3)
+  * Specify a text file which contains a list of targets and commands to execute: -list=<list_file> (1.3
 
 
 
 
 Currently it just works on SGB map files, but that is the most important feature because doing it by hand would be next to impossible.
 
-Built with Java 15.
+Targets Java 11 features, so you'll need to use Java 11+ to run it.
 
 To run:
 
