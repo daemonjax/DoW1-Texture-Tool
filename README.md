@@ -33,6 +33,7 @@ java -jar DoW1TextureTool.jar
 
 The above will print a "usage" screen which includes examples:
 
+[code]
 DoW1 Texture Tool v1.3.0  Copyright (C) 2021  Daemonjax
 This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
 are welcome to redistribute it under certain conditions.  See included LICENSE
@@ -54,3 +55,4 @@ Full Examples:
 "C:/Dawn of War/My_Mod/data/scenarios/sp" -decal="art/decals/z_all/terrain_dust_02" -mul=0.5 -ol
 "C:/Dawn of War/My_Mod/data/scenarios/sp" -list="testArgList.DoW1tt" -o
 NOTE: The -set command is not yet implemented, and neither is .WHE model file support.
+[/code]
