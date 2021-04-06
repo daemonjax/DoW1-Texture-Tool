@@ -31,4 +31,26 @@ To run:
 
 java -jar DoW1TextureTool.jar
 
-The above will print a "usage" screen which includes examples.
+The above will print a "usage" screen which includes examples:
+
+DoW1 Texture Tool v1.3.0  Copyright (C) 2021  Daemonjax
+This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you
+are welcome to redistribute it under certain conditions.  See included LICENSE
+file for more info, or go to https://www.gnu.org/licenses/gpl-3.0.html
+
+Usage:
+DoW1TextureTool "<FILE or FOLDER PATH>" <TARGET> <COMMAND> <OPTIONS>
+
+Target: -decal="<decal file path>" | -list="<arguement list file path>" | -info
+Command: -mul=<float value> | -set=<float value> | -info
+Options: -{ o | l }
+     -o == overwrite files
+     -l == send output to logfile
+
+Full Examples:
+"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -info
+"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -decal="art/decals/z_all/terrain_dust_02" -info
+"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb" -decal="art/decals/z_all/terrain_dust_02" -mul=0.5
+"C:/Dawn of War/My_Mod/data/scenarios/sp" -decal="art/decals/z_all/terrain_dust_02" -mul=0.5 -ol
+"C:/Dawn of War/My_Mod/data/scenarios/sp" -list="testArgList.DoW1tt" -o
+NOTE: The -set command is not yet implemented, and neither is .WHE model file support.
