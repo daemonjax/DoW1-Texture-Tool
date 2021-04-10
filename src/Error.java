@@ -40,13 +40,13 @@ enum Error
     COMMAND_INVALID("You used an invalid command for the filetype detected.  For example, the -set command can only be used on .WHE model files"),
     PROGRAMMER_NODE_UNIQUE_ID("!!!Programmer Error!!!  You can't get the relative offset of this node's UNIQUE_ID this way because you have to know the value at NUM_PATH_CHAR"),
     PROGRAMMER_ENUM("!!!Programmer Error!!!  Didn't list all enum types in switch statement."),
-    COMMAND_GET("While getting command from arguements string"),
-    UNIQUE_ID_NOT_FOUND("While looking for the unique ID in the DATASMAP section of the map file.  The target decal name does not exist in this map"),
+    COMMAND_NOT_RECOGNIZED("The command isn't recognized"),
     PARSE_COMMAND("While parsing the number for this command.  It doesn't seem to be a proper number"),
     BAD_OPTION("Bad options -- The letter is not a valid option or the option string doesn't start with a '-' character"),
     LIST_CANNOT_CONTAIN_INFO("One or more lines in the aguement within the list file contains -info as a target or command -- that is not allowed."),
     LIST_COMMAND_NOT_INFO("When using a list as a target, the only valid command is -info"),
     LIST_REQUIRES_OVERWRITE("You must use the -o option (overwrite files) when using the -list target."),
+    PATH_CHARS_LENGTH("When replacing a decal, the number of characters for the entire path of the original and replacement must be equal"),
     SAVEFILE("While saving file "),
     NOT_IMPLEMENTED("Attempting to use an unimplemented feature"),
     SHOW_USAGE(Strings.EMPTY);
@@ -66,7 +66,7 @@ enum Error
 
     final Object exit(Exception e)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In function ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit();
     }
 
@@ -78,7 +78,7 @@ enum Error
 
     final Object exit(Exception e, final String message)
     {
-        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In method ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
+        Utils.sb.append(Strings.NEWLINE).append(Strings.FATAL_ERROR).append("In function ").append(e.getStackTrace()[0].getClassName()).append(":").append(e.getStackTrace()[0].getMethodName());
         return exit(message);
     }
 

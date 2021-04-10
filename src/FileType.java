@@ -22,8 +22,8 @@ import java.io.File;
  */
 enum FileType
 {
-    MAP_SGB   (new Command[] { Command.INFO, Command.MULTIPLY }),
-    MODEL_WHE (new Command[] { Command.INFO, Command.SET      });
+    MAP_SGB   (new Command[] { Command.MULTIPLY, Command.REPLACE_ALL, Command.INFO }),
+    MODEL_WHE (new Command[] { Command.SET, Command.INFO });
     static final int MIN_FILENAME_LENGTH = 4;
     final Command[] validCommands;
 

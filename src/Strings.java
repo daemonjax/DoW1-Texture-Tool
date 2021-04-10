@@ -21,7 +21,7 @@
  */
 final class Strings
 {
-    static final String VERSION = "DoW1 Texture Tool v1.3.0";
+    static final String VERSION = "DoW1 Texture Tool v1.4.0";
     static final String LICENSE_INFO = "\n" + VERSION + "  Copyright (C) 2021  Daemonjax\n" +
                                        "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you\n" +
                                        "are welcome to redistribute it under certain conditions.  See included LICENSE\n" +
@@ -42,6 +42,9 @@ final class Strings
     static final String COMMAND = "Command: ";
     static final String COMMAND_MULTIPLY_TEXT = "-mul";
     static final String COMMAND_SET_TEXT = "-set";
+    static final String COMMAND_REPLACE_TEXT = "-replace_all";
+    static final String REPLACED = "Replaced: ";
+    static final String WITH = " with ";
     static final String INDENT = "     ";
     static final String FILE_OR_FOLDER = "File/folder: ";
     static final String FILE_MODEL = ".whe";
@@ -66,9 +69,11 @@ final class Strings
     static final String TARGET_EXAMPLE_LIST = "=\"<arguement list file path>\"";
     static final String COMMAND_EXAMPLE_MULTIPLY = "=<float value>";
     static final String COMMAND_EXAMPLE_SET = "=<float value>";
+    static final String COMMAND_EXAMPLE_REPLACE_ALL = "=<new decal file path>";
     static final String UNIQUE_ID_FOUND = "Found unique ID for decal within this map (";
     static final String ENDING_1 = ").";
     static final String UNIQUE_ID_NOT_FOUND = "Unique ID for decal not found within this map (";
+    static final String PATH_CHARS_NOT_FOUND = "The target decal path was not found within this map (";
     static final String MULTIPLY_MESSAGE_1 = "Multiplying the size of all instances of this decal by: ";
     static final String INFO_MESSAGE_1 = "List of current sizes for each instance of this decal: ";
     static final String MULTIPLY_DECAL_COUNTER = "Total number of these decals modified on this map: ";

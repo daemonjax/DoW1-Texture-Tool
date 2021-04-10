@@ -20,7 +20,7 @@
  */
 enum Command
 {
-    MULTIPLY(Strings.COMMAND_MULTIPLY_TEXT), SET(Strings.COMMAND_SET_TEXT), INFO(Strings.TARGET_INFO_TEXT);
+    MULTIPLY(Strings.COMMAND_MULTIPLY_TEXT), SET(Strings.COMMAND_SET_TEXT), REPLACE_ALL(Strings.COMMAND_REPLACE_TEXT), INFO(Strings.TARGET_INFO_TEXT);
     private static final int COMMAND_MIN_LENGTH = 5;
     final String text;
 
@@ -45,11 +45,17 @@ enum Command
         {
             //final String s1 = s.substring(0, COMMAND_MIN_LENGTH);
 
-            if (s.startsWith(MULTIPLY.text + Strings.EQUAL_SIGN) && (length > MULTIPLY.text.length() + 2)) return MULTIPLY;
-            if (s.startsWith(SET.text + Strings.EQUAL_SIGN) && (length > SET.text.length() + 2)) return SET;
+            if (Command.MULTIPLY.compare(s, length)) return MULTIPLY;//.startsWith(MULTIPLY.text + Strings.EQUAL_SIGN) && (length > MULTIPLY.text.length() + 2)) return MULTIPLY;
+            if (Command.SET.compare(s, length)) return SET;
+            if (Command.REPLACE_ALL.compare(s, length)) return REPLACE_ALL;
             if (s.equals(INFO.text)) return INFO;
         }
-        return (Command)Error.COMMAND_GET.exit(new Exception());
+        return (Command)Error.COMMAND_NOT_RECOGNIZED.exit(new Exception());
+    }
+
+    private final boolean compare(final String s, final int length)
+    {
+        return (s.startsWith(this.text + Strings.EQUAL_SIGN) && (length > this.text.length() + 2));
     }
 
     //static final Command process(final String[] args, final FileType fileType, final Target target)
@@ -67,7 +73,7 @@ enum Command
             if (doOutput) Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);
             result = Command.get(s.toLowerCase());
             if (result.isValidFor(fileType)) return result;
-            Error.COMMAND_INVALID.exit(new Exception());
+            Error.COMMAND_INVALID.exit(new Exception(), fileType.name());
         }
 
         return (Command)Error.PROCESS_COMMAND.exit(new Exception());
@@ -77,14 +83,15 @@ enum Command
     {
         switch (this)
         {
-            case MULTIPLY: return Strings.COMMAND_EXAMPLE_MULTIPLY;
-            case SET     : return Strings.COMMAND_EXAMPLE_SET;
-            case INFO    : return Strings.EMPTY;
+            case MULTIPLY   : return Strings.COMMAND_EXAMPLE_MULTIPLY;
+            case SET        : return Strings.COMMAND_EXAMPLE_SET;
+            case REPLACE_ALL: return Strings.COMMAND_EXAMPLE_REPLACE_ALL;
+            case INFO       : return Strings.EMPTY;
         }
         return (String)Error.PROGRAMMER_ENUM.exit(new Exception());
     }
 
-    final float getValueFromArg(String[] args)
+    final float getFloatValueFromArg(final String[] args)
     {
         switch (this)
         {
@@ -101,4 +108,11 @@ enum Command
         }
         return (float)Error.PROGRAMMER_ENUM.exit(new Exception());
     }
+
+    static final String getStringValueFromArg(final String[] args)
+    {
+        final int ordinal = DoW1TextureTool.Arg.COMMAND.ordinal();
+        return args[ordinal].substring(args[ordinal].indexOf('=') + 1);
+    }
+
 }

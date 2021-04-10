@@ -1,3 +1,5 @@
 -decal=art/decals/jungle/jungle_debris_02 -mul=0.375
 -decal=art/decals/jungle/jungle_ground_01 -mul=0.5
 -decal=art/decals/jungle/jungle_ground_03 -mul=0.5
+-decal=art/decals/jungle/jungle_debris_03 -mul=0.5
+-decal="art/decals/jungle/stones_01" -replace_all="art/decals/jungle/stones_02"

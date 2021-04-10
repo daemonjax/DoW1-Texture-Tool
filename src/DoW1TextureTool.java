@@ -114,7 +114,7 @@ final class DoW1TextureTool
                     {
                         target = Target.process(argList[j]);
                         command = Command.process(argList[j], fileType, target, true);
-                        if (doMapOperation(files[i], fileBytes, target, command, argList[j])) ++bytesWereModified;
+                        bytesWereModified += doMapCommand(files[i], fileBytes, target, command, argList[j]);
                     }
                     if (doSave && bytesWereModified > 0) Utils.save(files[i], fileBytes, Strings.EXTENSION_SAVE, Option.OVERWRITE.isSet(optionMask));
                 }
@@ -290,11 +290,10 @@ final class DoW1TextureTool
             }
             return (String[][])Error.ARG_LIST_BAD.exit(new Exception());
         }
-
         return (String[][])Error.ARG_LIST_DNE.exit(new Exception(), new File(argListFilename).getAbsolutePath());
     }
 
-    static final boolean doMapOperation(final File file, final byte[] fileBytes, final Target target, final Command command, final String[] args)
+    static final int doMapCommand(final File file, final byte[] fileBytes, final Target target, final Command command, final String[] args)
     {
         final int[] counters = new int[2];
         final byte[] uniqueID = new byte[4];
@@ -314,42 +313,71 @@ final class DoW1TextureTool
                 offset = DataSMap.nextDecalTypesNodeOffset(offset, thisDecalPathCharsLength);
             }
         }
-        else if (command == Command.MULTIPLY || command == Command.INFO)
+        else if (target == Target.DECAL)
         {
-            final byte[] targetDecalPathChars = Utils.getBytesFromChars(target.getValueFromArg(args).toCharArray());
-            offset = getUniqueIDOffsetFromPathChars(fileBytes, targetDecalPathChars, numNodes, offset);
-
-            if (offset < 0)
+            if (command == Command.MULTIPLY || command == Command.INFO)
             {
-                Utils.sb.append(Strings.UNIQUE_ID_NOT_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
-                return false;
+                final byte[] targetDecalPathChars = Utils.getBytesFromChars(Target.getStringValueFromArg(args).toCharArray());
+                offset = getUniqueIDOffsetFromPathChars(fileBytes, targetDecalPathChars, numNodes, offset);
+
+                if (offset < 0)
+                {
+                    Utils.sb.append(Strings.UNIQUE_ID_NOT_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
+                    return 0;
+                }
+
+                Utils.sb.append(Strings.UNIQUE_ID_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
+
+                uniqueID[0] = fileBytes[offset]; uniqueID[1] = fileBytes[offset + 1]; uniqueID[2] = fileBytes[offset + 2]; uniqueID[3] = fileBytes[offset + 3];
+                offset = DataEnty.findStartingOffset(fileBytes, offset + DataSMap.Node.NUM_BYTES_UNIQUE_ID);
+                numNodes = DataEnty.getNumNodes(fileBytes, offset);
+                offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
+                final float multiplier = command.getFloatValueFromArg(args);
+
+                if (command == Command.MULTIPLY) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_MESSAGE_1).append(multiplier).append(Strings.NEWLINE);
+                else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_1).append(Strings.NEWLINE);
+
+                applyMultiplier(fileBytes, offset, numNodes, uniqueID, command, multiplier, counters);
+
+
+                if (command == Command.MULTIPLY)
+                {
+                    Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_COUNTER).append(counters[0]).append(Strings.NEWLINE);
+                    if (counters[1] > 0) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_MINSIZE_COUNTER).append(counters[1]).append(Strings.NEWLINE);
+                }
+                else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_NUM_DECALS_FOUND).append(counters[0]).append(Strings.NEWLINE);
+
+                return 1;
             }
-
-            Utils.sb.append(Strings.UNIQUE_ID_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
-
-            uniqueID[0] = fileBytes[offset]; uniqueID[1] = fileBytes[offset + 1]; uniqueID[2] = fileBytes[offset + 2]; uniqueID[3] = fileBytes[offset + 3];
-            offset = DataEnty.findStartingOffset(fileBytes, offset + DataSMap.Node.NUM_BYTES_UNIQUE_ID);
-            numNodes = DataEnty.getNumNodes(fileBytes, offset);
-            offset += DataEnty.Header.TOTAL_SIZE + DataEnty.Node.UNIQUE_ID.relativeOffset;
-            final float multiplier = command.getValueFromArg(args);
-
-            if (command == Command.MULTIPLY) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_MESSAGE_1).append(multiplier).append(Strings.NEWLINE);
-            else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_1).append(Strings.NEWLINE);
-
-            applyMultiplier(fileBytes, offset, numNodes, uniqueID, command, multiplier, counters);
-
-
-            if (command == Command.MULTIPLY)
+            else if (command == Command.REPLACE_ALL)
             {
-                Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_COUNTER).append(counters[0]).append(Strings.NEWLINE);
-                if (counters[1] > 0) Utils.sb.append(Strings.INDENT).append(Strings.MULTIPLY_DECAL_MINSIZE_COUNTER).append(counters[1]).append(Strings.NEWLINE);
-            }
-            else Utils.sb.append(Strings.INDENT).append(Strings.INFO_MESSAGE_NUM_DECALS_FOUND).append(counters[0]).append(Strings.NEWLINE);
+                final String targetStringValue = Target.getStringValueFromArg(args);
+                final String commandStringValue = Command.getStringValueFromArg(args);
+                final byte[] targetDecalPathChars = Utils.getBytesFromChars(targetStringValue.toCharArray());
+                final byte[] commandDecalPathChars = Utils.getBytesFromChars(commandStringValue.toCharArray());
 
-            return true;
+                if (targetDecalPathChars.length == commandDecalPathChars.length) // I think I can, but I don't want to take the chance right now
+                {
+                    offset = getUniqueIDOffsetFromPathChars(fileBytes, targetDecalPathChars, numNodes, offset) - targetDecalPathChars.length;
+
+                    if (offset < 0)
+                    {
+                        Utils.sb.append(Strings.PATH_CHARS_NOT_FOUND).append(fileName).append(Strings.ENDING_1).append(Strings.NEWLINE);
+                        return 0;
+                    }
+
+                    Utils.sb.append(Strings.INDENT).append(Strings.REPLACED).append(targetStringValue).append(Strings.WITH).append(commandStringValue).append(Strings.NEWLINE);
+                    final int length = offset + commandDecalPathChars.length;
+                    for (int i = offset, j = 0; i < length; ++i, ++j) { fileBytes[i] = commandDecalPathChars[j]; }
+                    return 1;
+                }
+
+                Error.PATH_CHARS_LENGTH.exit(new Exception());
+                System.exit(1);
+            }
         }
 
-        return false;
+        return 0;
     }
 
 

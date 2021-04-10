@@ -57,9 +57,10 @@ enum Target
         return (Target)Error.PROCESS_TARGET.exit(new Exception());
     }
 
-    final String getValueFromArg(final String[] args)
+    static final String getStringValueFromArg(final String[] args)
     {
-        return args[DoW1TextureTool.Arg.TARGET.ordinal()].substring(args[DoW1TextureTool.Arg.TARGET.ordinal()].indexOf('=') + 1);
+        final int ordinal = DoW1TextureTool.Arg.TARGET.ordinal();
+        return args[ordinal].substring(args[ordinal].indexOf('=') + 1);
     }
 
     final String getExample()
