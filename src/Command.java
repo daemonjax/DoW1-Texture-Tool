@@ -41,11 +41,9 @@ enum Command
     {
         final int length = s.length();
 
-        if (s.length() >= COMMAND_MIN_LENGTH)
+        if (length >= COMMAND_MIN_LENGTH)
         {
-            //final String s1 = s.substring(0, COMMAND_MIN_LENGTH);
-
-            if (Command.MULTIPLY.compare(s, length)) return MULTIPLY;//.startsWith(MULTIPLY.text + Strings.EQUAL_SIGN) && (length > MULTIPLY.text.length() + 2)) return MULTIPLY;
+            if (Command.MULTIPLY.compare(s, length)) return MULTIPLY;
             if (Command.SET.compare(s, length)) return SET;
             if (Command.REPLACE_ALL.compare(s, length)) return REPLACE_ALL;
             if (s.equals(INFO.text)) return INFO;
@@ -58,7 +56,6 @@ enum Command
         return (s.startsWith(this.text + Strings.EQUAL_SIGN) && (length > this.text.length() + 2));
     }
 
-    //static final Command process(final String[] args, final FileType fileType, final Target target)
     static final Command process(final String[] args, final FileType fileType, final Target target, final boolean doOutput)
     {
         final Command result;
@@ -69,7 +66,7 @@ enum Command
 
         if (args[ordinal] != null)
         {
-            s = args[ordinal];
+            s = args[ordinal] = args[ordinal].replace('\\', '/');
             if (doOutput) Utils.sb.append(Strings.COMMAND).append(s).append(Strings.NEWLINE);
             result = Command.get(s.toLowerCase());
             if (result.isValidFor(fileType)) return result;

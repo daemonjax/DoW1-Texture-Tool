@@ -93,6 +93,7 @@ final class Strings
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp\" -decal=\"art/decals/z_all/terrain_dust_02\" -mul=0.5 -ol\n" +
                                         "\"C:/Dawn of War/My_Mod/data/scenarios/sp\" -list=\"testArgList.DoW1tt\" -o\n" +
+                                        "\"C:/Dawn of War/My_Mod/data/scenarios/sp/mymap.sgb\" -decal=\"art/decals/z_all/terrain_dust_01\" -replace_all=\"art/decals/z_all/terrain_dust_02\"\n" +
                                         "NOTE: The -set command is not yet implemented, and neither is .WHE model file support.\n";
     static final String SUCESS = "Success!  ";
 
