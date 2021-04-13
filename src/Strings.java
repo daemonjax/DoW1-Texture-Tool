@@ -68,7 +68,7 @@ final class Strings
     static final String TARGET_EXAMPLE_DECAL = "=\"<decal file path>\"";
     static final String TARGET_EXAMPLE_LIST = "=\"<arguement list file path>\"";
     static final String COMMAND_EXAMPLE_MULTIPLY = "=<float value>";
-    static final String COMMAND_EXAMPLE_SET = "=<float value>";
+    static final String COMMAND_EXAMPLE_SET = COMMAND_EXAMPLE_MULTIPLY;
     static final String COMMAND_EXAMPLE_REPLACE_ALL = TARGET_EXAMPLE_DECAL;
     static final String UNIQUE_ID_FOUND = "Found unique ID for decal within this map (";
     static final String ENDING_1 = ").";
